@@ -8,17 +8,42 @@ export default function App() {
 	const [neutral, setNeutral] = useState(0)
 	const [bad, setBad] = useState(0)
 	const [all, setAll] = useState(0)
+	const [average, setAverage] = useState(0)
+	const [positive, setPositive] = useState("0 %")
 
 	const addGood = () => {
-		setGood(good+1)
+
+		const newGood = good + 1
+		const newAll = all + 1
+
+		setGood(newGood)
+		setAll(newAll)
+		setAverage((newGood - bad) / newAll)
+		setPositive((newGood / newAll * 100).toString() + " %")
+
 	}
 
 	const addNeutral = () => {
+
+		const newAll = all + 1
+
 		setNeutral(neutral + 1)
+		setAll(newAll)
+		setAverage((good - bad) / newAll)
+		setPositive((good / newAll * 100).toString() + " %")
+
 	}
 
 	const addBad = () => {
-		setBad(bad + 1)
+
+		const newBad = bad + 1
+		const newAll = all + 1
+
+		setBad(newBad)
+		setAll(newAll)
+		setAverage((good - newBad) / newAll)
+		setPositive((good / newAll * 100).toString() + " %")
+
 	}
 
 	return (
@@ -35,6 +60,9 @@ export default function App() {
 				<Stats name="good" stats={good}></Stats>
 				<Stats name="neutral" stats={neutral}></Stats>
 				<Stats name="bad" stats={bad}></Stats>
+				<Stats name="all" stats={all}></Stats>
+				<Stats name="average" stats={average}></Stats>
+				<Stats name="positive" stats={positive}></Stats>
 			</div>
 		</>
 	)
