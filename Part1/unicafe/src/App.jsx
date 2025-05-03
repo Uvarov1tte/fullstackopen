@@ -56,25 +56,18 @@ export default function App() {
 				<Button onClick={addBad} name="bad"></Button>
 			</div>
 
-			<h1>statistics</h1>
+			<h1>StatisticsLine</h1>
 			<div>
 				{
-					all > 0 ? (
-						<>
-							<Statistics name="good" Statistics={good}></Statistics>
-							<Statistics name="neutral" Statistics={neutral}></Statistics>
-							<Statistics name="bad" Statistics={bad}></Statistics>
-							<Statistics name="all" Statistics={all}></Statistics>
-							<Statistics name="average" Statistics={average}></Statistics>
-							<Statistics name="positive" Statistics={positive}></Statistics>
-						</>
-					) : (
+					all > 0 ?
+						<Statistics good={good} bad={bad} neutral={neutral} all={all} average={average} positive={positive}></Statistics>
+						:
 						<div>No feedback given</div>
-					)
+
 				}
 
 			</div>
 		</>
-		
+
 	)
 }

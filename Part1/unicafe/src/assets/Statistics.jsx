@@ -1,5 +1,14 @@
-export default function Statistics({ name, Statistics }) {
+import StatisticLine from "./StatisticLine"
+
+export default function Statistics({ good, neutral, bad, all, average, positive }) {
     return (
-        <p>{name} {Statistics}</p>
+        <>
+            <StatisticLine name="good" stat={good}></StatisticLine>
+            <StatisticLine name="neutral" stat={neutral}></StatisticLine>
+            <StatisticLine name="bad" stat={bad}></StatisticLine>
+            <StatisticLine name="all" stat={all}></StatisticLine>
+            <StatisticLine name="average" stat={average}></StatisticLine>
+            <StatisticLine name="positive" stat={positive}></StatisticLine>
+        </>
     )
 }
