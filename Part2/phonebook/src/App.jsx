@@ -1,19 +1,18 @@
 import { useState, useEffect } from 'react'
-import { Input } from './assets/Input';
-import { List } from './assets/List';
-import { Filter } from './assets/Filter';
-import axios from 'axios';
+import { Input } from './components/Input';
+import { List } from './components/List';
+import { Filter } from './components/Filter';
+import personsService from './services/persons'
 
 const App = () => {
 	const [persons, setPersons] = useState([])
 
 	useEffect(() => {
-		console.log('effect')
-		axios
-			.get('http://localhost:3001/persons')
+		personsService
+			.getAll()
 			.then(response => {
-				console.log('promise fulfilled', response.data)
-				setPersons(response.data)
+				console.log('promise fulfilled', response)
+				setPersons(response)
 			})
 	}, [])
 
@@ -39,15 +38,24 @@ const App = () => {
 		} else {
 			const contact = {
 				name: newName,
-				number: newNumber,
-				id: persons.length + 1
+				number: newNumber
 			}
-			setPersons(persons.concat(contact))
+			personsService
+				.create(contact)
+				.then(res => {
+					setPersons(persons.concat(res))
+					setNewName('')
+					setNewNumber('')
+				})
 		}
 	}
 
 	function handleFilterChange(e) {
 		setFilter(e.target.value)
+	}
+
+	function deletePerson() {
+
 	}
 
 	const personsToShow = persons.filter(person => person.name.toLowerCase().includes(filter.toLowerCase()))
@@ -68,7 +76,7 @@ const App = () => {
 				</div>
 			</form>
 			<h2>Numbers</h2>
-			<List persons={personsToShow} />
+			<List persons={personsToShow} onDelete={deletePerson} />
 		</div>
 	)
 }
