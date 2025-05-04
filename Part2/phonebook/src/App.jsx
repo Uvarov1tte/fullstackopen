@@ -1,10 +1,17 @@
 import { useState } from 'react'
+import { Input } from './assets/Input';
+import { List } from './assets/List';
 
 const App = () => {
 	const [persons, setPersons] = useState([
-		{ name: 'Arto Hellas' }
+		{ name: 'Arto Hellas', number: '040-123456', id: 1 },
+		{ name: 'Ada Lovelace', number: '39-44-5323523', id: 2 },
+		{ name: 'Dan Abramov', number: '12-43-234345', id: 3 },
+		{ name: 'Mary Poppendieck', number: '39-23-6423122', id: 4 }
 	])
+
 	const [newName, setNewName] = useState('')
+	const [newNumber, setNewNumber] = useState('')
 	const [existed, setExisted] = useState(false)
 
 	function handleNameChange(e) {
@@ -13,12 +20,21 @@ const App = () => {
 		setExisted(persons.filter(person => person.name === inputName).length > 0)
 	}
 
+	function handleNumberChange(e) {
+		setNewNumber(e.target.value)
+	}
+
 	function addPerson(e) {
 		e.preventDefault()
 		if (existed) {
 			alert(`${newName} is already added to phonebook`)
 		} else {
-			setPersons(persons.concat({ name: newName }))
+			const contact = {
+				name: newName,
+				number: newNumber,
+				id: persons.length + 1
+			}
+			setPersons(persons.concat(contact))
 		}
 	}
 
@@ -28,14 +44,15 @@ const App = () => {
 			<h2>Phonebook</h2>
 			<form>
 				<div>
-					name: <input onChange={handleNameChange} value={newName} />
+					<Input label='name' onChange={handleNameChange} value={newName} type='text' />
+					<Input label='number' onChange={handleNumberChange} value={newNumber} type='text' />
 				</div>
 				<div>
 					<button onClick={addPerson} type="submit">add</button>
 				</div>
 			</form>
 			<h2>Numbers</h2>
-			{persons.map((p) => <p key={p.name}>{p.name}</p>)}
+			<List persons={persons} />
 		</div>
 	)
 }
