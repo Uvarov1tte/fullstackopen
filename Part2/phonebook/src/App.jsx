@@ -22,6 +22,7 @@ const App = () => {
 	const [newNumber, setNewNumber] = useState('')
 	const [existed, setExisted] = useState(false)
 	const [filter, setFilter] = useState('')
+	const [message, setMessage] = useState(null)
 
 	function handleNameChange(e) {
 		const inputName = e.target.value
@@ -31,6 +32,13 @@ const App = () => {
 
 	function handleNumberChange(e) {
 		setNewNumber(e.target.value)
+	}
+
+	function renderMessage(newMsg) {
+		setMessage(newMsg)
+		setTimeout(() => {
+			setMessage(null)
+		}, 5000)
 	}
 
 	function addPerson(e) {
@@ -43,6 +51,7 @@ const App = () => {
 				personsService.update(changedNumber.id, changedNumber)
 					.then((res) => {
 						setPersons(persons.map((p) => (p.id !== changedNumber.id ? p : res)))
+						renderMessage(`Updated ${changedNumber.name}`)
 					})
 			}
 		} else {
@@ -56,6 +65,7 @@ const App = () => {
 					setPersons(persons.concat(res))
 					setNewName('')
 					setNewNumber('')
+					renderMessage(`Added ${res.name}`)
 				})
 		}
 	}
@@ -82,7 +92,7 @@ const App = () => {
 	return (
 		<div>
 			<h2>Phonebook</h2>
-			{/* <Notification message={'aaaaaaaaaaaaa'} /> */}
+			<Notification message={message} />
 			<Filter label='filter shown with' onChange={handleFilterChange} value={filter} type='text' />
 			<h2>add a new</h2>
 			<form>
