@@ -1,4 +1,4 @@
-export function List({ persons, onDelete }) {
+export default function List({ persons, onDelete }) {
     return (
         <>
             <table>

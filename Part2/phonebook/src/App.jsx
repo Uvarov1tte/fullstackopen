@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react'
-import { Input } from './components/Input';
-import { List } from './components/List';
-import { Filter } from './components/Filter';
+import Input from './components/Input';
+import List from './components/List';
+import Filter from './components/Filter';
+import Notification from "./components/Notification";
 import personsService from './services/persons'
+import './index.css'
 
 const App = () => {
 	const [persons, setPersons] = useState([])
@@ -33,8 +35,14 @@ const App = () => {
 
 	function addPerson(e) {
 		e.preventDefault()
+		
 		if (existed) {
-			alert(`${newName} is already added to phonebook`)
+			const person = persons.filter(p => p.name === newName)[0]
+			const changedNumber = { ...person, number: newNumber }
+			personsService.update(changedNumber.id, changedNumber)
+				.then((res) => {
+					setPersons(persons.map((p) => (p.id !== changedNumber.id ? p : res)))
+				})
 		} else {
 			const contact = {
 				name: newName,
@@ -72,6 +80,7 @@ const App = () => {
 	return (
 		<div>
 			<h2>Phonebook</h2>
+			{/* <Notification message={'aaaaaaaaaaaaa'} /> */}
 			<Filter label='filter shown with' onChange={handleFilterChange} value={filter} type='text' />
 			<h2>add a new</h2>
 			<form>
