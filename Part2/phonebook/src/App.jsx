@@ -5,14 +5,23 @@ const App = () => {
 		{ name: 'Arto Hellas' }
 	])
 	const [newName, setNewName] = useState('')
+	const [existed, setExisted] = useState(false)
+
 	function handleNameChange(e) {
-		setNewName(e.target.value)
+		const inputName = e.target.value
+		setNewName(inputName)
+		setExisted(persons.filter(person => person.name === inputName).length > 0)
 	}
+
 	function addPerson(e) {
 		e.preventDefault()
-		setPersons(persons.concat({ name: newName }))
-		console.log(persons)
+		if (existed) {
+			alert(`${newName} is already added to phonebook`)
+		} else {
+			setPersons(persons.concat({ name: newName }))
+		}
 	}
+
 
 	return (
 		<div>
