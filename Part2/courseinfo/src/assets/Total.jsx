@@ -1,9 +1,11 @@
-export function Total(props) {
-    let total = 0
-    for (let i of props.parts) {
-        total += i.exercises
-    }
+export function Total({ parts }) {
+    console.log(parts)
+    const total =
+        parts.reduce((s, p) => {
+            return { exercises: Number(s.exercises) + Number(p.exercises) }
+        }).exercises
+    
     return (
-        <div>Number of exercises {total}</div>
+        <div><b>total of {total} exercises</b></div>
     )
 }
