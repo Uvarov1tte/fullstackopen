@@ -55,8 +55,9 @@ const App = () => {
 	}
 
 	function deletePerson(e) {
-		if (window.confirm('delete?')) {
-			const deleteId = e.target.value
+		const deleteId = e.target.value
+		const deletePerson = persons.filter(p => p.id === deleteId)
+		if (window.confirm(`Delete ${deletePerson[0].name}?`)) {
 			personsService
 				.remove(deleteId)
 				.then(res => {
