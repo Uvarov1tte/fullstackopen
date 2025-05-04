@@ -10,9 +10,9 @@ const App = () => {
 	useEffect(() => {
 		personsService
 			.getAll()
-			.then(response => {
-				console.log('promise fulfilled', response)
-				setPersons(response)
+			.then(res => {
+				console.log('promise fulfilled', res)
+				setPersons(res)
 			})
 	}, [])
 
@@ -54,8 +54,15 @@ const App = () => {
 		setFilter(e.target.value)
 	}
 
-	function deletePerson() {
-
+	function deletePerson(e) {
+		if (window.confirm('delete?')) {
+			const deleteId = e.target.value
+			personsService
+				.remove(deleteId)
+				.then(res => {
+					setPersons(persons.filter(p => p.id !== res.id))
+				})
+		}
 	}
 
 	const personsToShow = persons.filter(person => person.name.toLowerCase().includes(filter.toLowerCase()))
