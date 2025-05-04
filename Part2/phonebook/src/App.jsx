@@ -35,14 +35,16 @@ const App = () => {
 
 	function addPerson(e) {
 		e.preventDefault()
-		
+
 		if (existed) {
 			const person = persons.filter(p => p.name === newName)[0]
 			const changedNumber = { ...person, number: newNumber }
-			personsService.update(changedNumber.id, changedNumber)
-				.then((res) => {
-					setPersons(persons.map((p) => (p.id !== changedNumber.id ? p : res)))
-				})
+			if (window.confirm(`${changedNumber.name} is already added to phonebook, replace the old number with a new one?`)) {
+				personsService.update(changedNumber.id, changedNumber)
+					.then((res) => {
+						setPersons(persons.map((p) => (p.id !== changedNumber.id ? p : res)))
+					})
+			}
 		} else {
 			const contact = {
 				name: newName,
