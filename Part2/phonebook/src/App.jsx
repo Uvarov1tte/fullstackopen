@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Input } from './assets/Input';
 import { List } from './assets/List';
+import { Filter } from './assets/Filter';
 
 const App = () => {
 	const [persons, setPersons] = useState([
@@ -49,7 +50,7 @@ const App = () => {
 	return (
 		<div>
 			<h2>Phonebook</h2>
-			<Input label='filter shown with' onChange={handleFilterChange} value={filter} type='text' />
+			<Filter label='filter shown with' onChange={handleFilterChange} value={filter} type='text' />
 			<h2>add a new</h2>
 			<form>
 				<div>
