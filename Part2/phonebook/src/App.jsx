@@ -22,7 +22,7 @@ const App = () => {
 	const [newNumber, setNewNumber] = useState('')
 	const [existed, setExisted] = useState(false)
 	const [filter, setFilter] = useState('')
-	const [message, setMessage] = useState(null)
+	const [message, setMessage] = useState({ text: null, type: 'success' })
 
 	function handleNameChange(e) {
 		const inputName = e.target.value
@@ -34,10 +34,10 @@ const App = () => {
 		setNewNumber(e.target.value)
 	}
 
-	function renderMessage(newMsg) {
-		setMessage(newMsg)
+	function renderMessage(newMsg, type) {
+		setMessage({ text: newMsg, type: type })
 		setTimeout(() => {
-			setMessage(null)
+			setMessage({ ...message, text: null })
 		}, 5000)
 	}
 
@@ -51,7 +51,11 @@ const App = () => {
 				personsService.update(changedNumber.id, changedNumber)
 					.then((res) => {
 						setPersons(persons.map((p) => (p.id !== changedNumber.id ? p : res)))
-						renderMessage(`Updated ${changedNumber.name}`)
+						renderMessage(`Updated ${changedNumber.name}`, 'success')
+					})
+					.catch((error) => {
+						renderMessage(`already removed from server`, 'error')
+						setNotes(notes.filter((n) => n.id !== id))
 					})
 			}
 		} else {
