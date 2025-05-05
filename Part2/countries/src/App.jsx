@@ -9,6 +9,7 @@ function App() {
 	const [query, setQuery] = useState('')
 	const [selected, setSelected] = useState(null)
 	const [countriesToShow, setCountriesToShow] = useState([])
+	const [weather, setWeather] = useState(null)
 
 	useEffect(() => {
 		countriesService
@@ -45,6 +46,22 @@ function App() {
 			.getOne(e.target.value)
 			.then(res => {
 				setSelected(res)
+				getWeather(res)
+			})
+	}
+
+	async function getWeather(country) {
+		let lat, lon
+		await countriesService
+			.getGeo(country)
+			.then(res => {
+				lat = res.lat
+				lon = res.lon
+			})
+		countriesService
+			.getWeather(lat, lon)
+			.then(res => {
+				setWeather(res)
 			})
 	}
 
@@ -52,8 +69,8 @@ function App() {
 	return (
 		<>
 			<Filter label='find countries' onChange={handleQueryOnChange} type='text' value={query} />
-			<CountriesList list={countriesToShow} onSelect={getCountry}/>
-			<Country country={selected} />
+			<CountriesList list={countriesToShow} onSelect={getCountry} />
+			<Country country={selected} weather={weather} />
 		</>
 	)
 }

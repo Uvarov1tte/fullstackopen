@@ -11,4 +11,24 @@ const getOne = name => {
     return request.then(response => response.data)
 }
 
-export default { getAll, getOne}
+const api_key = import.meta.env.VITE_WEATHER_API_KEY
+
+const getGeo = (country) => {
+    console.log(country)
+    let url
+    if ('capital' in country) {
+        url = `http://api.openweathermap.org/geo/1.0/direct?q=${country.capital},${country.cca2}&limit=1&appid=${api_key}`
+    } else {
+        url = `http://api.openweathermap.org/geo/1.0/direct?q=${country.cca2}&limit=1&appid=${api_key}`
+    }
+    const request = axios.get(url)
+    return request.then(response => response.data[0])
+}
+
+const getWeather = (lat, lon) => {
+    const url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=metric&appid=${api_key}`
+    const request = axios.get(url)
+    return request.then(response => response.data)
+}
+
+export default { getAll, getOne, getGeo, getWeather }

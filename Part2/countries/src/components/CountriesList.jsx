@@ -1,5 +1,4 @@
 export default function CountriesList({ list, onSelect }) {
-    console.log(list)
     if (list.length == 1) {
         return null
     }
