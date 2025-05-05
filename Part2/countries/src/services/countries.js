@@ -14,7 +14,6 @@ const getOne = name => {
 const api_key = import.meta.env.VITE_WEATHER_API_KEY
 
 const getGeo = (country) => {
-    console.log(country)
     let url
     if ('capital' in country) {
         url = `http://api.openweathermap.org/geo/1.0/direct?q=${country.capital},${country.cca2}&limit=1&appid=${api_key}`

@@ -58,7 +58,7 @@ function App() {
 				lat = res.lat
 				lon = res.lon
 			})
-		countriesService
+		await countriesService
 			.getWeather(lat, lon)
 			.then(res => {
 				setWeather(res)
