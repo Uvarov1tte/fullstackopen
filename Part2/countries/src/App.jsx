@@ -8,6 +8,10 @@ function App() {
 	const [query, setQuery] = useState('')
 	const [selected, setSelected] = useState(null)
 
+	const countriesToShow = query != ''
+	? countries.filter(c => c.name.toLowerCase().includes(query.toLowerCase()))
+	: []
+
 	useEffect(() => {
 		countriesService
 			.getAll()
@@ -29,24 +33,23 @@ function App() {
 				.then(res => {
 					setSelected(res)
 				})
+		} else {
+			setSelected(null)
 		}
 
 	}
 
-	const countriesToShow = query != ''
-		? countries.filter(c => c.name.toLowerCase().includes(query.toLowerCase()))
-		: []
+
 
 	return (
 		<>
 			<Filter label='find countries' onChange={handleQueryOnChange} type='text' value={query} />
-			{countriesToShow.length == 1
-				? <Country country={selected} />
-				: {
-					countriesToShow.length < 10
-						? countriesToShow.map((c) => <p key={c}>{c}</p>)
-						: <p>Too many matches, specify another filter</p>
-				}}
+			{countriesToShow.length != 1:{
+				countriesToShow.length < 10
+					? countriesToShow.map((c) => <p key={c}>{c}</p>)
+					: <p>Too many matches, specify another filter</p>
+			}}
+			<Country country={selected} />
 		</>
 	)
 }

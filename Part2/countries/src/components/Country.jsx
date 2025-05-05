@@ -1,4 +1,8 @@
 export default function Country({ country }) {
+    if (country == null){
+        return null
+    }
+    
     return (
         <>
             <h1>{country.name}</h1>
