@@ -8,10 +8,7 @@ function App() {
 	const [countries, setCountries] = useState([])
 	const [query, setQuery] = useState('')
 	const [selected, setSelected] = useState(null)
-
-	const countriesToShow = query != ''
-		? countries.filter(c => c.toLowerCase().includes(query.toLowerCase()))
-		: []
+	const [countriesToShow, setCountriesToShow] = useState([])
 
 	useEffect(() => {
 		countriesService
@@ -27,10 +24,13 @@ function App() {
 	}, [])
 
 	function handleQueryOnChange(evt) {
-		setQuery(evt.target.value)
-		if (countriesToShow.length == 1) {
+		const filter = evt.target.value
+		const show = countries.filter(c => c.toLowerCase().includes(filter.toLowerCase()))
+		setQuery(filter)
+		setCountriesToShow(show)
+		if (show.length == 1) {
 			countriesService
-				.getOne(countriesToShow[0])
+				.getOne(show[0])
 				.then(res => {
 					setSelected(res)
 				})
@@ -40,12 +40,19 @@ function App() {
 
 	}
 
+	function getCountry(e) {
+		countriesService
+			.getOne(e.target.value)
+			.then(res => {
+				setSelected(res)
+			})
+	}
 
 
 	return (
 		<>
 			<Filter label='find countries' onChange={handleQueryOnChange} type='text' value={query} />
-			<CountriesList list={countriesToShow} />
+			<CountriesList list={countriesToShow} onSelect={getCountry}/>
 			<Country country={selected} />
 		</>
 	)

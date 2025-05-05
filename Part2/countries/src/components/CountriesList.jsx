@@ -1,14 +1,18 @@
-export default function CountriesList({ list }) {
+export default function CountriesList({ list, onSelect }) {
+    console.log(list)
     if (list.length == 1) {
         return null
     }
 
     return (
-        <> {list.length < 10
-            ? list.map((c) => <p key={c}>{c}</p>)
-            : <p>Too many matches, specify another filter</p>
-        }
-        </>
+        <table>
+            <tbody>
+                {list.length < 10
+                    ? list.map((c) => <tr key={c}><td>{c}</td><td><button onClick={onSelect} value={c}>Show</button></td></tr>)
+                    : <tr><td>Too many matches, specify another filter</td></tr>
+                }
+            </tbody>
+        </table>
 
     )
 }
