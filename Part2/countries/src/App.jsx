@@ -50,18 +50,19 @@ function App() {
 			})
 	}
 
-	async function getWeather(country) {
-		let lat, lon
-		await countriesService
+	function getWeather(country) {
+		countriesService
 			.getGeo(country)
 			.then(res => {
-				lat = res.lat
-				lon = res.lon
+				countriesService
+					.getWeather(res.lat, res.lon)
+					.then(res => {
+						setWeather(res)
+					})
 			})
-		await countriesService
-			.getWeather(lat, lon)
-			.then(res => {
-				setWeather(res)
+			.catch((e) => {
+				console.log('No weather available')
+				setWeather(null)
 			})
 	}
 
