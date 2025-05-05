@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import Filter from './components/Filter';
 import Country from './components/Country';
 import countriesService from "./services/countries";
+import CountriesList from './components/CountriesList';
 
 function App() {
 	const [countries, setCountries] = useState([])
@@ -9,8 +10,8 @@ function App() {
 	const [selected, setSelected] = useState(null)
 
 	const countriesToShow = query != ''
-	? countries.filter(c => c.name.toLowerCase().includes(query.toLowerCase()))
-	: []
+		? countries.filter(c => c.toLowerCase().includes(query.toLowerCase()))
+		: []
 
 	useEffect(() => {
 		countriesService
@@ -19,7 +20,7 @@ function App() {
 				console.log('promise fulfilled', res)
 				const list = []
 				for (let i of res) {
-					list.push(i.name)
+					list.push(i.name.common)
 				}
 				setCountries(list)
 			})
@@ -44,11 +45,7 @@ function App() {
 	return (
 		<>
 			<Filter label='find countries' onChange={handleQueryOnChange} type='text' value={query} />
-			{countriesToShow.length != 1:{
-				countriesToShow.length < 10
-					? countriesToShow.map((c) => <p key={c}>{c}</p>)
-					: <p>Too many matches, specify another filter</p>
-			}}
+			<CountriesList list={countriesToShow} />
 			<Country country={selected} />
 		</>
 	)
