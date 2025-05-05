@@ -55,7 +55,7 @@ const App = () => {
 					})
 					.catch((error) => {
 						renderMessage(`already removed from server`, 'error')
-						setNotes(notes.filter((n) => n.id !== id))
+						setPersons(persons.filter((p) => p.id !== changedNumber.id))
 					})
 			}
 		} else {
