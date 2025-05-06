@@ -2,8 +2,10 @@ const express = require('express')
 const app = express()
 const morgan = require('morgan')
 
+morgan.token('body', function (req, res) { return JSON.stringify(req.body) })
+
 app.use(express.json())
-app.use(morgan('tiny'))
+app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body'))
 
 let persons = [
     {
@@ -57,7 +59,7 @@ app.delete('/api/persons/:id', (req, res) => {
 
 app.post('/api/persons', (req, res) => {
     const body = req.body
-    if (!body.name || !body.number ) {
+    if (!body.name || !body.number) {
         return res.status(400).json({
             error: 'invalid person info'
         })
