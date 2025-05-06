@@ -55,14 +55,20 @@ app.delete('/api/persons/:id', (req, res) => {
 
 app.post('/api/persons', (req, res) => {
     const body = req.body
-    if (!body.name || !body.number) {
+    if (!body.name || !body.number ) {
         return res.status(400).json({
             error: 'invalid person info'
         })
     }
 
+    if (isPersonExisted(body.name)) {
+        return res.status(400).json({
+            error: 'name must be unique'
+        })
+    }
+
     const person = {
-        id: Math.floor(Math.random()*1e10),
+        id: Math.floor(Math.random() * 1e10).toString(),
         name: body.name,
         number: body.number,
     }
@@ -71,6 +77,13 @@ app.post('/api/persons', (req, res) => {
 
     res.json(persons)
 })
+
+function isPersonExisted(name) {
+    if (persons.filter(person => person.name == name).length > 0) {
+        return true
+    }
+    return false
+}
 
 const PORT = 3001
 app.listen(PORT, () => {
