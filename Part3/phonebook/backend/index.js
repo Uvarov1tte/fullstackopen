@@ -12,6 +12,11 @@ app.use(express.static('dist'))
 app.use(express.json())
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body'))
 
+
+app.get('/', (req, res) => {
+    res.render('index.html')
+})
+
 app.get('/info', async (req, res) => {
     let persons
     await Person.find({}).then(person => {
