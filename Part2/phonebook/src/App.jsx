@@ -69,7 +69,7 @@ const App = () => {
 					setPersons(persons.concat(res))
 					setNewName('')
 					setNewNumber('')
-					renderMessage(`Added ${res.name}`)
+					renderMessage(`Added ${res.name}`, 'success')
 				})
 		}
 	}

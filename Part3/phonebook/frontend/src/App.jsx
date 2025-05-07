@@ -66,10 +66,14 @@ const App = () => {
 			personsService
 				.create(contact)
 				.then(res => {
-					setPersons(persons.concat(res))
-					setNewName('')
-					setNewNumber('')
-					renderMessage(`Added ${res.name}`)
+					if (!res.error) {
+						setPersons(persons.concat(res))
+						setNewName('')
+						setNewNumber('')
+						renderMessage(`Added ${res.name}`, 'success')
+					} else {
+						renderMessage(res.error, "error")
+					}
 				})
 		}
 	}
@@ -91,7 +95,7 @@ const App = () => {
 		}
 	}
 
-	const personsToShow = persons.filter(person => person.name.toLowerCase().includes(filter.toLowerCase()))
+	const personsToShow = persons.filter(person => { console.log(person); return person.name.toLowerCase().includes(filter.toLowerCase()) })
 
 
 	return (

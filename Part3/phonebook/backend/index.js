@@ -27,16 +27,15 @@ app.get('/api/persons', (req, res) => {
     })
 })
 
-app.get('/api/persons/:id', (req, res) => {
+app.get('/api/persons/:id', (req, res, next) => {
     const id = req.params.id
     Person.findById(id)
         .then(person => {
             if (person) {
                 res.json(person)
-            } else {
-                res.status(404).end()
             }
         })
+        .catch(error => next(error))
 })
 
 app.delete('/api/persons/:id', (req, res, next) => {
@@ -48,7 +47,7 @@ app.delete('/api/persons/:id', (req, res, next) => {
         .catch(error => next(error))
 })
 
-app.post('/api/persons', async (req, res) => {
+app.post('/api/persons', async (req, res, next) => {
     const body = req.body
     if (!body.name || !body.number) {
         return res.status(400).json({
@@ -65,9 +64,7 @@ app.post('/api/persons', async (req, res) => {
         .then(result => {
             res.json(result)
         })
-        .catch(err => {
-            res.json({ error: err })
-        })
+        .catch(err => next(err))
 })
 
 app.put('/api/persons/:id', (req, res, next) => {
@@ -99,9 +96,10 @@ app.use(unknownEndpoint)
 const errorHandler = (error, request, response, next) => {
     console.error(error.message)
 
-    if (error.name === 'CastError') {
-        return response.status(400).send({ error: 'malformatted id' })
-    }
+    // if (error.name === 'CastError') {
+    //     return response.status(400).send({ error: 'malformatted id' })
+    // }
+    return response.send({ error: error.message })
 
     next(error)
 }
