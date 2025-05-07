@@ -14,7 +14,7 @@ app.use(morgan(':method :url :status :res[content-length] - :response-time ms :b
 
 
 app.get('/', (req, res) => {
-    res.render('index.html')
+    res.render('index')
 })
 
 app.get('/info', async (req, res) => {
