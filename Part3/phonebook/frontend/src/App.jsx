@@ -75,6 +75,10 @@ const App = () => {
 						renderMessage(res.error, "error")
 					}
 				})
+				.catch(err => {
+					console.log(err)
+					renderMessage(err.response.data.error, 'error')
+				})
 		}
 	}
 
@@ -95,7 +99,7 @@ const App = () => {
 		}
 	}
 
-	const personsToShow = persons.filter(person => { console.log(person); return person.name.toLowerCase().includes(filter.toLowerCase()) })
+	const personsToShow = persons.filter(person =>  person.name.toLowerCase().includes(filter.toLowerCase()) )
 
 
 	return (

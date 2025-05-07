@@ -86,22 +86,16 @@ app.put('/api/persons/:id', (req, res, next) => {
         .catch(err => next(err))
 })
 
-const unknownEndpoint = (request, response) => {
-    response.status(404).send({ error: 'unknown endpoint' })
+const unknownEndpoint = (req, res) => {
+    res.status(404).send({ error: 'unknown endpoint' })
 }
 
 // handler of requests with unknown endpoint
 app.use(unknownEndpoint)
 
-const errorHandler = (error, request, response, next) => {
+const errorHandler = (error, req, res, next) => {
     console.error(error.message)
-
-    // if (error.name === 'CastError') {
-    //     return response.status(400).send({ error: 'malformatted id' })
-    // }
-    return response.send({ error: error.message })
-
-    next(error)
+    res.status(400).send({ error: error.message })
 }
 
 // this has to be the last loaded middleware, also all the routes should be registered before this!
