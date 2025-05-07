@@ -65,9 +65,13 @@ app.post('/api/persons', async (req, res) => {
         number: body.number
     })
 
-    person.save().then(result => {
-        res.json(result)
-    })
+    person.save()
+        .then(result => {
+            res.json(result)
+        })
+        .catch(err => {
+            res.json({ error: err })
+        })
 })
 
 async function isPersonExisted(name) {

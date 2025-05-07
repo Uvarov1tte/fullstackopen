@@ -44,21 +44,21 @@ const App = () => {
 	function addPerson(e) {
 		e.preventDefault()
 
-		// if (existed) {
-		// 	const person = persons.filter(p => p.name === newName)[0]
-		// 	const changedNumber = { ...person, number: newNumber }
-		// 	if (window.confirm(`${changedNumber.name} is already added to phonebook, replace the old number with a new one?`)) {
-		// 		// personsService.update(changedNumber.id, changedNumber)
-		// 		// 	.then((res) => {
-		// 		// 		setPersons(persons.map((p) => (p.id !== changedNumber.id ? p : res)))
-		// 		// 		renderMessage(`Updated ${changedNumber.name}`, 'success')
-		// 		// 	})
-		// 		// 	.catch((error) => {
-		// 		// 		renderMessage(`already removed from server`, 'error')
-		// 		// 		setPersons(persons.filter((p) => p.id !== changedNumber.id))
-		// 		// 	})
-		// 	}
-		// } else {
+		if (existed) {
+			const person = persons.filter(p => p.name === newName)[0]
+			const changedNumber = { ...person, number: newNumber }
+			if (window.confirm(`${changedNumber.name} is already added to phonebook, replace the old number with a new one?`)) {
+				// personsService.update(changedNumber.id, changedNumber)
+				// 	.then((res) => {
+				// 		setPersons(persons.map((p) => (p.id !== changedNumber.id ? p : res)))
+				// 		renderMessage(`Updated ${changedNumber.name}`, 'success')
+				// 	})
+				// 	.catch((error) => {
+				// 		renderMessage(`already removed from server`, 'error')
+				// 		setPersons(persons.filter((p) => p.id !== changedNumber.id))
+				// 	})
+			}
+		} else {
 			const contact = {
 				name: newName,
 				number: newNumber
@@ -71,7 +71,7 @@ const App = () => {
 					setNewNumber('')
 					renderMessage(`Added ${res.name}`)
 				})
-		// }
+		}
 	}
 
 	function handleFilterChange(e) {
