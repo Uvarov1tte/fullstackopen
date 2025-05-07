@@ -4,7 +4,6 @@ const app = express()
 const morgan = require('morgan')
 const cors = require('cors')
 const Person = require('./models/person.js')
-const mongoose = require('mongoose')
 
 app.use(cors())
 
@@ -93,7 +92,7 @@ const unknownEndpoint = (req, res) => {
 // handler of requests with unknown endpoint
 app.use(unknownEndpoint)
 
-const errorHandler = (error, req, res, next) => {
+const errorHandler = (error, req, res) => {
     console.error(error.message)
     res.status(400).send({ error: error.message })
 }
