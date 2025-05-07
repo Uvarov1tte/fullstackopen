@@ -4,6 +4,8 @@ const app = express()
 const morgan = require('morgan')
 const cors = require('cors')
 const Person = require('./models/person.js')
+const mongoose = require('mongoose')
+const { Person } = require('./mongo.js')
 
 app.use(cors())
 
@@ -45,30 +47,29 @@ app.get('/api/persons/:id', (req, res) => {
 //     res.status(204).end()
 // })
 
-// app.post('/api/persons', (req, res) => {
-//     const body = req.body
-//     if (!body.name || !body.number) {
-//         return res.status(400).json({
-//             error: 'invalid person info'
-//         })
-//     }
+app.post('/api/persons', (req, res) => {
+    const body = req.body
+    if (!body.name || !body.number) {
+        return res.status(400).json({
+            error: 'invalid person info'
+        })
+    }
 
-//     if (isPersonExisted(body.name)) {
-//         return res.status(400).json({
-//             error: 'name must be unique'
-//         })
-//     }
+    // if (isPersonExisted(body.name)) {
+    //     return res.status(400).json({
+    //         error: 'name must be unique'
+    //     })
+    // }
 
-//     const person = {
-//         id: Math.floor(Math.random() * 1e10).toString(),
-//         name: body.name,
-//         number: body.number,
-//     }
+   const person = new Person({
+		name: process.argv[4],
+		number: process.argv[5]
+	})
 
-//     persons = persons.concat(person)
-
-//     res.json(persons)
-// })
+	person.save().then(result => {
+		res.json(result)
+	})
+})
 
 // function isPersonExisted(name) {
 //     if (persons.filter(person => person.name == name).length > 0) {
