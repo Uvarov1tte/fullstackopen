@@ -42,7 +42,8 @@ app.get('/api/persons/:id', (req, res) => {
 app.delete('/api/persons/:id', (req, res, next) => {
     Person.findByIdAndDelete(req.params.id)
         .then(result => {
-            res.status(204).redirect('/api/persons')
+            console.log(result)
+            return res.status(204).end()
         })
         .catch(error => next(error))
 })
@@ -54,11 +55,6 @@ app.post('/api/persons', async (req, res) => {
             error: 'invalid person info'
         })
     }
-
-    // if (await isPersonExisted(body.name)) {
-    //     Person.findOne({ name: body.name })
-    //         .then(person => res.redirect(`/api/persons/${person.id}`))
-    // }
 
     const person = new Person({
         name: body.name,
@@ -73,13 +69,6 @@ app.post('/api/persons', async (req, res) => {
             res.json({ error: err })
         })
 })
-
-async function isPersonExisted(name) {
-    if (await Person.findOne({ name: name })) {
-        return true
-    }
-    return false
-}
 
 app.put('/api/persons/:id', (req, res, next) => {
     const { name: name, number: number } = req.body
