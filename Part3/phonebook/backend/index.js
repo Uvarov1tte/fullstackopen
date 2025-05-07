@@ -13,10 +13,6 @@ app.use(express.json())
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body'))
 
 
-app.get('/', (req, res) => {
-    res.render('index')
-})
-
 app.get('/info', async (req, res) => {
     let persons
     await Person.find({}).then(person => {
@@ -63,6 +59,7 @@ app.post('/api/persons', async (req, res, next) => {
         name: body.name,
         number: body.number
     })
+    console.log('error')
 
     person.save()
         .then(result => {
@@ -90,6 +87,10 @@ app.put('/api/persons/:id', (req, res, next) => {
         .catch(err => next(err))
 })
 
+app.get('/', (req, res) => {
+    res.render('index')
+})
+
 const unknownEndpoint = (req, res) => {
     res.status(404).send({ error: 'unknown endpoint' })
 }
@@ -97,9 +98,9 @@ const unknownEndpoint = (req, res) => {
 // handler of requests with unknown endpoint
 app.use(unknownEndpoint)
 
-const errorHandler = (error, req, res) => {
-    console.error(error.message)
-    res.status(400).send({ error: error.message })
+const errorHandler = (error, req, res, next) => {
+    console.log(error.message)
+    res.status(400).json({ error: error.message })
 }
 
 // this has to be the last loaded middleware, also all the routes should be registered before this!
