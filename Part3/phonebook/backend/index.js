@@ -5,7 +5,6 @@ const morgan = require('morgan')
 const cors = require('cors')
 const Person = require('./models/person.js')
 const mongoose = require('mongoose')
-const { Person } = require('./mongo.js')
 
 app.use(cors())
 
@@ -15,7 +14,7 @@ app.use(express.json())
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body'))
 
 app.get('/info', async (req, res) => {
-    let persons 
+    let persons
     await Person.find({}).then(person => {
         persons = person
     })
@@ -30,24 +29,25 @@ app.get('/api/persons', (req, res) => {
 
 app.get('/api/persons/:id', (req, res) => {
     const id = req.params.id
-    const person = persons.find(person => person.id === id)
-
-    if (person) {
-        res.json(person)
-    } else {
-        res.status(404).end()
-    }
-
+    Person.findById(id)
+        .then(person => {
+            if (person) {
+                res.json(person)
+            } else {
+                res.status(404).end()
+            }
+        })
 })
 
-// app.delete('/api/persons/:id', (req, res) => {
-//     const id = req.params.id
-//     persons = persons.filter(person => person.id !== id)
+app.delete('/api/persons/:id', (req, res, next) => {
+    Person.findByIdAndDelete(req.params.id)
+        .then(result => {
+            res.status(204).redirect('/api/persons')
+        })
+        .catch(error => next(error))
+})
 
-//     res.status(204).end()
-// })
-
-app.post('/api/persons', (req, res) => {
+app.post('/api/persons', async (req, res) => {
     const body = req.body
     if (!body.name || !body.number) {
         return res.status(400).json({
@@ -55,28 +55,66 @@ app.post('/api/persons', (req, res) => {
         })
     }
 
-    // if (isPersonExisted(body.name)) {
-    //     return res.status(400).json({
-    //         error: 'name must be unique'
-    //     })
+    // if (await isPersonExisted(body.name)) {
+    //     Person.findOne({ name: body.name })
+    //         .then(person => res.redirect(`/api/persons/${person.id}`))
     // }
 
-   const person = new Person({
-		name: process.argv[4],
-		number: process.argv[5]
-	})
+    const person = new Person({
+        name: body.name,
+        number: body.number
+    })
 
-	person.save().then(result => {
-		res.json(result)
-	})
+    person.save().then(result => {
+        res.json(result)
+    })
 })
 
-// function isPersonExisted(name) {
-//     if (persons.filter(person => person.name == name).length > 0) {
-//         return true
-//     }
-//     return false
-// }
+async function isPersonExisted(name) {
+    if (await Person.findOne({ name: name })) {
+        return true
+    }
+    return false
+}
+
+app.put('/api/persons/:id', (req, res, next) => {
+    const { name: name, number: number } = req.body
+
+    Person.findById(req.params.id)
+        .then(person => {
+            if (!person) {
+                return res.status(404).end()
+            }
+
+            person.name = name
+            person.number = number
+
+            return person.save().then((updatedPerson) => {
+                res.json(updatedPerson)
+            })
+        })
+        .catch(err => next(err))
+})
+
+const unknownEndpoint = (request, response) => {
+    response.status(404).send({ error: 'unknown endpoint' })
+}
+
+// handler of requests with unknown endpoint
+app.use(unknownEndpoint)
+
+const errorHandler = (error, request, response, next) => {
+    console.error(error.message)
+
+    if (error.name === 'CastError') {
+        return response.status(400).send({ error: 'malformatted id' })
+    }
+
+    next(error)
+}
+
+// this has to be the last loaded middleware, also all the routes should be registered before this!
+app.use(errorHandler)
 
 const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
