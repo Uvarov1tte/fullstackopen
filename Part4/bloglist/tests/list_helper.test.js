@@ -93,10 +93,16 @@ describe('favorite blog', () => {
 })
 
 describe('top blogger', () => {
-    const topBlogger = "Robert C. Martin"
+    const topPosts = "Robert C. Martin"
+    const topLikes = "Edsger W. Dijkstra"
 
     test('blogger with most blogs', () => {
         const result = listHelper.mostBlogs(blogs)
-        assert.strictEqual(result, topBlogger)
+        assert.strictEqual(result, topPosts)
+    })
+    
+    test('blogger with most likes', () => {
+        const result = listHelper.mostLikes(blogs)
+        assert.strictEqual(result, topLikes)
     })
 })

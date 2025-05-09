@@ -39,10 +39,32 @@ const mostBlogs = (blogs) => {
     return topBlogger
 }
 
+const mostLikes = (blogs) => {
+
+    const blogger = ld.groupBy(blogs, 'author')
+    let maxLikes = 0, author
+    for (let i of Object.keys(blogger)) {
+        console.log(i)
+        const sumLikes = blogger[i].reduce(
+            (accumulator, currentValue) => {
+                return (accumulator + currentValue.likes)
+            },
+            0,
+        );
+        if (sumLikes > maxLikes) {
+            maxLikes = sumLikes
+            author = i
+        }
+    }
+
+    return author
+}
+
 
 module.exports = {
     dummy,
     totalLikes,
     favoriteBlog,
-    mostBlogs
+    mostBlogs,
+    mostLikes
 }
