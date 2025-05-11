@@ -74,6 +74,23 @@ test('if no likes specified, default is 0 ', async () => {
     assert.strictEqual(addedBlog.body.likes, 0)
 })
 
+
+test('blog without content is not added', async () => {
+    const newBlog = {
+        author: "XYZ",
+        url: "http://localhost:1111"
+    }
+
+    await api
+        .post('/api/blogs')
+        .send(newBlog)
+        .expect(400)
+
+    const response = await api.get('/api/blogs')
+
+    assert.strictEqual(response.body.length, helper.initialBlogs.length)
+})
+
 after(async () => {
     await mongoose.connection.close()
 })
