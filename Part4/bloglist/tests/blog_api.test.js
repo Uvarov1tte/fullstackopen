@@ -5,7 +5,7 @@ const supertest = require('supertest')
 const app = require('../app')
 const api = supertest(app)
 
-const helper = require('./test_helper')
+const helper = require('../utils/test_helper')
 
 const Blog = require('../models/blog')
 
@@ -28,7 +28,13 @@ test('there are two blogs', async () => {
     assert.strictEqual(response.body.length, 6)
 })
 
-
+test.only('the unique id property of the blog posts is named id', async () => {
+    const blogs = await helper.blogsInDb()
+    blogs.forEach((blog) => {
+        assert.notStrictEqual(blog.id, undefined);
+        assert.strictEqual(blog._id, undefined);
+    });
+})
 
 after(async () => {
     await mongoose.connection.close()
