@@ -75,7 +75,7 @@ test('if no likes specified, default is 0 ', async () => {
 })
 
 
-test('blog without content is not added', async () => {
+test('invalid blog is not added and return status 400', async () => {
     const newBlog = {
         author: "XYZ",
         url: "http://localhost:1111"
@@ -89,6 +89,39 @@ test('blog without content is not added', async () => {
     const response = await api.get('/api/blogs')
 
     assert.strictEqual(response.body.length, helper.initialBlogs.length)
+})
+
+test('succeeds with status code 204 if id is valid', async () => {
+    const blogsAtStart = await helper.blogsInDb()
+    const blogToDelete = blogsAtStart[0]
+
+    await api
+        .delete(`/api/blogs/${blogToDelete.id}`)
+        .expect(204)
+
+    const blogsAtEnd = await helper.blogsInDb()
+
+    assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length - 1)
+
+    const contents = blogsAtEnd.map(r => r.title)
+    assert(!contents.includes(blogToDelete.title))
+})
+
+test('blog is updated correctly', async () => {
+    const blogsAtStart = await helper.blogsInDb()
+    const updatedBlog = {
+        title:blogsAtStart[0].title,
+        author:blogsAtStart[0].author,
+        url:blogsAtStart[0].url,
+        likes:100
+    }
+
+    const response = await api
+        .put(`/api/blogs/${blogsAtStart[0].id}`)
+        .send(updatedBlog)
+        .expect(200)
+
+    assert.strictEqual(response.body.likes, 100)
 })
 
 after(async () => {
