@@ -3,13 +3,13 @@ const Blog = require('../models/blog')
 const User = require('../models/user')
 
 blogsRouter.get('/', async (req, res) => {
-    const blogs = await Blog.find({})
+    const blogs = await Blog.find({}).populate('user')
     res.json(blogs)
 })
 
 blogsRouter.get('/:id', async (req, res, next) => {
     try {
-        const blog = await Blog.findById(req.params.id)
+        const blog = await Blog.findById(req.params.id).populate('user')
         if (blog) {
             res.json(blog)
         } else {
@@ -22,16 +22,29 @@ blogsRouter.get('/:id', async (req, res, next) => {
 
 blogsRouter.post('/', async (req, res, next) => {
 
-    const blog = new Blog(req.body)
-    const user = await User.findById(body.userId)
+    const body = req.body
+    const users = await User.find({})
+    const id = users[0]._id
+
+    const blog = {
+        title: body.title,
+        author: body.author,
+        url: body.url,
+        likes: body.likes,
+        user: id
+    }
+    const newBlog = new Blog(blog)
+
+    const user = await User.findById(blog.user)
 
     if (!user) {
-        return response.status(400).json({ error: 'userId missing or not valid' })
+        return res.status(400).json({ error: 'userId missing or not valid' })
     }
     try {
-        const result = await blog.save()
+        const result = await newBlog.save()
+        user.blogs = user.blogs.concat(result._id)
+        await user.save()
         res.status(201).json(result)
-        if (result) { }
     } catch (err) {
         next(err)
     }
