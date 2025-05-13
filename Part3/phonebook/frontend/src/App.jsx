@@ -53,9 +53,14 @@ const App = () => {
 						setPersons(persons.map((p) => (p.id !== changedNumber.id ? p : res)))
 						renderMessage(`Updated ${changedNumber.name}`, 'success')
 					})
-					.catch((error) => {
-						renderMessage(`already removed from server`, 'error')
-						setPersons(persons.filter((p) => p.id !== changedNumber.id))
+					.catch((err) => {
+						renderMessage(err.response.data.error, 'error')
+						personsService
+							.getAll()
+							.then(res => {
+								console.log('promise fulfilled', res)
+								setPersons(res)
+							})
 					})
 			}
 		} else {
@@ -99,7 +104,7 @@ const App = () => {
 		}
 	}
 
-	const personsToShow = persons.filter(person =>  person.name.toLowerCase().includes(filter.toLowerCase()) )
+	const personsToShow = persons.filter(person => person.name.toLowerCase().includes(filter.toLowerCase()))
 
 
 	return (
