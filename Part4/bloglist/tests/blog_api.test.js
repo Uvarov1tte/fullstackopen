@@ -11,9 +11,38 @@ const helper = require('../utils/test_helper')
 const Blog = require('../models/blog')
 const User = require('../models/user')
 
+let token
+
 beforeEach(async () => {
     await Blog.deleteMany({})
     await Blog.insertMany(helper.initialBlogs)
+    await User.deleteMany({})
+    
+    const newUser = {
+        username: 'aaaaaaa',
+        name: 'Matti Luukkainen',
+        password: 'qwerty',
+    }
+
+    await api
+        .post('/api/users')
+        .send(newUser)
+        .expect(201)
+        .expect('Content-Type', /application\/json/)
+
+    const login = {
+        username: 'aaaaaaa',
+        password: 'qwerty',
+    }
+
+    const credentials = await api
+        .post('/api/login')
+        .send(login)
+        .expect(200)
+        .expect('Content-Type', /application\/json/)
+
+
+    token = credentials.body.token
 })
 
 describe('when there is initially one user in db', () => {
@@ -26,7 +55,7 @@ describe('when there is initially one user in db', () => {
         await user.save()
     })
 
-    test.only('creation succeeds with a fresh username', async () => {
+    test('creation succeeds with a fresh username', async () => {
         const usersAtStart = await helper.usersInDb()
 
         const newUser = {
@@ -48,7 +77,7 @@ describe('when there is initially one user in db', () => {
         assert(usernames.includes(newUser.username))
     })
 
-    test.only('invalid user is not added', async () => {
+    test('invalid user is not added', async () => {
         const usersAtStart = await helper.usersInDb()
 
         const newUser = {
@@ -82,13 +111,33 @@ test('there are two blogs', async () => {
     assert.strictEqual(response.body.length, 6)
 })
 
-test.only('the unique id property of the blog posts is named id', async () => {
+test('the unique id property of the blog posts is named id', async () => {
     const blogs = await helper.blogsInDb()
     blogs.forEach((blog) => {
         assert.notStrictEqual(blog.id, undefined);
         assert.strictEqual(blog._id, undefined);
     });
 })
+
+const postHelper = async (token) => {
+    const newBlog = {
+        title: "ABC",
+        author: "XYZ",
+        url: "http://localhost:1111",
+        likes: 2,
+    }
+
+    await api
+        .post('/api/blogs')
+        .set('Authorization', `Bearer ${token}`)
+        .send(newBlog)
+        .expect(201)
+        .expect('Content-Type', /application\/json/)
+
+
+    const response = await api.get('/api/blogs')
+    return response.body[6]
+}
 
 test('a valid blog can be added ', async () => {
     const newBlog = {
@@ -100,6 +149,7 @@ test('a valid blog can be added ', async () => {
 
     await api
         .post('/api/blogs')
+        .set('Authorization', `Bearer ${token}`)
         .send(newBlog)
         .expect(201)
         .expect('Content-Type', /application\/json/)
@@ -121,6 +171,7 @@ test('if no likes specified, default is 0 ', async () => {
     }
 
     const addedBlog = await api.post('/api/blogs')
+        .set('Authorization', `Bearer ${token}`)
         .send(newBlog)
         .expect(201)
         .expect('Content-Type', /application\/json/)
@@ -137,6 +188,7 @@ test('invalid blog is not added and return status 400', async () => {
 
     await api
         .post('/api/blogs')
+        .set('Authorization', `Bearer ${token}`)
         .send(newBlog)
         .expect(400)
 
@@ -146,16 +198,17 @@ test('invalid blog is not added and return status 400', async () => {
 })
 
 test('succeeds with status code 204 if id is valid', async () => {
-    const blogsAtStart = await helper.blogsInDb()
-    const blogToDelete = blogsAtStart[0]
+
+    const blogToDelete = await postHelper(token) //add one blog just for delete, hence end result should be == initial
 
     await api
-        .delete(`/api/blogs/${blogToDelete.id}`)
+        .delete(`/api/blogs/${blogToDelete._id}`)
+        .set('Authorization', `Bearer ${token}`)
         .expect(204)
 
     const blogsAtEnd = await helper.blogsInDb()
 
-    assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length - 1)
+    assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length)
 
     const contents = blogsAtEnd.map(r => r.title)
     assert(!contents.includes(blogToDelete.title))

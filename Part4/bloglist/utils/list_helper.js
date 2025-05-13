@@ -25,7 +25,6 @@ const favoriteBlog = (blogs) => {
 const mostBlogs = (blogs) => {
 
     const count = ld.countBy(blogs, 'author')
-    console.log(count)
 
     let max = 0
     let topBlogger
@@ -44,7 +43,6 @@ const mostLikes = (blogs) => {
     const blogger = ld.groupBy(blogs, 'author')
     let maxLikes = 0, author
     for (let i of Object.keys(blogger)) {
-        console.log(i)
         const sumLikes = blogger[i].reduce(
             (accumulator, currentValue) => {
                 return (accumulator + currentValue.likes)
