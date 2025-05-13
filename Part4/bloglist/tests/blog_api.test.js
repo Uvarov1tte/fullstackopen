@@ -112,10 +112,10 @@ test('succeeds with status code 204 if id is valid', async () => {
 test('blog is updated correctly', async () => {
     const blogsAtStart = await helper.blogsInDb()
     const updatedBlog = {
-        title:blogsAtStart[0].title,
-        author:blogsAtStart[0].author,
-        url:blogsAtStart[0].url,
-        likes:100
+        title: blogsAtStart[0].title,
+        author: blogsAtStart[0].author,
+        url: blogsAtStart[0].url,
+        likes: 100
     }
 
     const response = await api
@@ -129,36 +129,55 @@ test('blog is updated correctly', async () => {
 
 describe('when there is initially one user in db', () => {
     beforeEach(async () => {
-      await User.deleteMany({})
-  
-      const passwordHash = await bcrypt.hash('sekret', 10)
-      const user = new User({ username: 'root', passwordHash })
-  
-      await user.save()
+        await User.deleteMany({})
+
+        const passwordHash = await bcrypt.hash('sekret', 10)
+        const user = new User({ username: 'root', passwordHash })
+
+        await user.save()
     })
-  
+
     test.only('creation succeeds with a fresh username', async () => {
-      const usersAtStart = await helper.usersInDb()
-  
-      const newUser = {
-        username: 'mluukkai',
-        name: 'Matti Luukkainen',
-        password: 'salainen',
-      }
-  
-      await api
-        .post('/api/users')
-        .send(newUser)
-        .expect(201)
-        .expect('Content-Type', /application\/json/)
-  
-      const usersAtEnd = await helper.usersInDb()
-      assert.strictEqual(usersAtEnd.length, usersAtStart.length + 1)
-  
-      const usernames = usersAtEnd.map(u => u.username)
-      assert(usernames.includes(newUser.username))
+        const usersAtStart = await helper.usersInDb()
+
+        const newUser = {
+            username: 'mluukkai',
+            name: 'Matti Luukkainen',
+            password: 'salainen',
+        }
+
+        await api
+            .post('/api/users')
+            .send(newUser)
+            .expect(201)
+            .expect('Content-Type', /application\/json/)
+
+        const usersAtEnd = await helper.usersInDb()
+        assert.strictEqual(usersAtEnd.length, usersAtStart.length + 1)
+
+        const usernames = usersAtEnd.map(u => u.username)
+        assert(usernames.includes(newUser.username))
     })
-  })
+
+    test.only('invalid user is not added', async () => {
+        const usersAtStart = await helper.usersInDb()
+
+        const newUser = {
+            username: 'mluukkai',
+            name: 'Matti Luukkainen',
+            password: 'sa',
+        }
+
+        await api
+            .post('/api/users')
+            .send(newUser)
+            .expect(400)
+            .expect('Content-Type', /application\/json/)
+
+        const usersAtEnd = await helper.usersInDb()
+        assert.strictEqual(usersAtEnd.length, usersAtStart.length)
+    })
+})
 
 after(async () => {
     await mongoose.connection.close()

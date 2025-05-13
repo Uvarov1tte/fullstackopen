@@ -3,15 +3,18 @@ const usersRouter = require('express').Router()
 const User = require('../models/user')
 
 
-usersRouter.get('/', async (request, response) => {
+usersRouter.get('/', async (req, res, next) => {
     const users = await User
         .find({}).populate('blogs')
 
-    response.json(users)
+    res.json(users)
 })
 
-usersRouter.post('/', async (request, response) => {
-    const { username, name, password } = request.body
+usersRouter.post('/', async (req, res, next) => {
+    const { username, name, password } = req.body
+    if (password.length < 3) {
+        res.status(400).json({ error: "password too short" })
+    }
 
     const saltRounds = 10
     const passwordHash = await bcrypt.hash(password, saltRounds)
@@ -24,9 +27,7 @@ usersRouter.post('/', async (request, response) => {
 
     const savedUser = await user.save()
 
-    console.log(savedUser)
-    
-    response.status(201).json(savedUser)
+    res.status(201).json(savedUser)
 })
 
 module.exports = usersRouter
