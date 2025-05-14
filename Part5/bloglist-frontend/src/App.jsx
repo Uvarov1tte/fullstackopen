@@ -4,6 +4,7 @@ import blogService from './services/blogs'
 import loginService from './services/login'
 import LoginForm from './components/LoginForm'
 import Notification from './components/Notification'
+import BlogForm from './components/BlogForm'
 import './index.css'
 
 const App = () => {
@@ -12,6 +13,9 @@ const App = () => {
     const [password, setPassword] = useState('')
     const [user, setUser] = useState(null)
     const [message, setMessage] = useState({ text: null, type: 'success' })
+    const [title, setTitle] = useState('')
+    const [url, setUrl] = useState('')
+    const [author, setAuthor] = useState('')
 
     function renderMessage(newMsg, type) {
         setMessage({ text: newMsg, type: type })
@@ -53,7 +57,6 @@ const App = () => {
             )
             blogService.setToken(user.token)
             setUser(user)
-            console.log(user)
             setUsername('')
             setPassword('')
 
@@ -71,6 +74,32 @@ const App = () => {
         window.localStorage.clear()
         setUser(null)
         console.log('logged out')
+    }
+
+    const addBlog = async (event) => {
+        event.preventDefault()
+        try {
+
+            const newBlog = {
+                title: title,
+                author: author,
+                url: url
+            }
+
+            setAuthor('')
+            setTitle('')
+            setUrl('')
+
+            const blog = await blogService.create(newBlog)
+            console.log(blog)
+            setBlogs(blogs.concat(blog))
+            renderMessage(`added new blog ${blog.title} by ${blog.author}`, 'success')
+
+        } catch (exception) {
+
+            renderMessage('Invalid values', 'error')
+
+        }
     }
 
 
@@ -93,6 +122,15 @@ const App = () => {
                     <h2>blogs</h2>
                     <p>{user.name} logged in </p>
                     <button onClick={handleLogOut}>Log out</button>
+                    <BlogForm
+                        addBlog={addBlog}
+                        author={author}
+                        setAuthor={setAuthor}
+                        title={title}
+                        setTitle={setTitle}
+                        url={url}
+                        setUrl={setUrl}
+                    />
                     <BlogList blogs={blogs} />
                 </>
             }
