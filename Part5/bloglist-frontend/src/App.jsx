@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import BlogList from './components/BlogList'
 import blogService from './services/blogs'
-import login from './services/login'
+import loginService from './services/login'
 import LoginForm from './components/LoginForm'
 import Notification from './components/Notification'
 import './index.css'
@@ -20,30 +20,63 @@ const App = () => {
         }, 5000)
     }
 
+    useEffect(() => {
+
+        blogService.getAll().then(blogs =>
+            setBlogs(blogs)
+        )
+
+    }, [])
+
+    useEffect(() => {
+
+        const loggedUserJSON = window.localStorage.getItem('loggedNoteappUser')
+        if (loggedUserJSON) {
+            const user = JSON.parse(loggedUserJSON)
+            setUser(user)
+            blogService.setToken(user.token)
+        }
+
+    }, [])
+
     const handleLogin = async (event) => {
+
         event.preventDefault()
         try {
-            const user = await login.login({
+
+            const user = await loginService.login({
                 username, password,
             })
+
+            window.localStorage.setItem(
+                'loggedNoteappUser', JSON.stringify(user)
+            )
+            blogService.setToken(user.token)
             setUser(user)
             console.log(user)
             setUsername('')
             setPassword('')
+
         } catch (exception) {
+
             renderMessage('Wrong credentials', 'error')
+
         }
+
         console.log('logging in with', username, password)
+
     }
 
-    useEffect(() => {
-        blogService.getAll().then(blogs =>
-            setBlogs(blogs)
-        )
-    }, [])
+    const handleLogOut = async (event) => {
+        window.localStorage.clear()
+        setUser(null)
+        console.log('logged out')
+    }
+
 
     return (
-        <div>
+
+        <>
             <Notification message={message} />
             {user === null &&
                 <LoginForm
@@ -58,11 +91,13 @@ const App = () => {
             {user !== null &&
                 <>
                     <h2>blogs</h2>
-                    <p>{user.name} logged in</p>
+                    <p>{user.name} logged in </p>
+                    <button onClick={handleLogOut}>Log out</button>
                     <BlogList blogs={blogs} />
                 </>
             }
-        </div>
+        </>
+
     )
 }
 
