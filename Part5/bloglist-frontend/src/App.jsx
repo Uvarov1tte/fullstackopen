@@ -42,10 +42,10 @@ const App = () => {
 
     const getBlogs = async () => {
         const fetchedBlogs = await blogService.getAll()
-        var sorted = fetchedBlogs.slice(0);
+        var sorted = fetchedBlogs.slice(0)
         sorted.sort(function (a, b) {
-            return b.likes - a.likes;
-        });
+            return b.likes - a.likes
+        })
 
         setBlogs(sorted)
     }
@@ -131,8 +131,8 @@ const App = () => {
                     <button onClick={handleLogOut}>Log out</button>
                     <Togglable buttonLabel={'add new blog'}>
                         <BlogForm
-                        addBlog={addBlog}
-                        renderMessage={renderMessage}
+                            addBlog={addBlog}
+                            renderMessage={renderMessage}
                         />
                     </Togglable>
 

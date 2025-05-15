@@ -20,7 +20,7 @@ const BlogForm = ({ addBlog, renderMessage }) => {
             setUrl('')
 
             addBlog(newBlog)
-            renderMessage(`added new blog ${blog.title} by ${blog.author}`, 'success')
+            renderMessage(`added new blog ${newBlog.title} by ${newBlog.author}`, 'success')
 
         } catch (exception) {
 
