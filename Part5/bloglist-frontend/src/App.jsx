@@ -25,9 +25,7 @@ const App = () => {
 
     useEffect(() => {
 
-        blogService.getAll().then(blogs =>
-            setBlogs(blogs)
-        )
+        getBlogs()
 
     }, [])
 
@@ -41,6 +39,16 @@ const App = () => {
         }
 
     }, [])
+
+    const getBlogs = async () => {
+        const fetchedBlogs = await blogService.getAll()
+        var sorted = fetchedBlogs.slice(0);
+        sorted.sort(function (a, b) {
+            return b.likes - a.likes;
+        });
+
+        setBlogs(sorted)
+    }
 
     const handleLogin = async (event) => {
 
@@ -98,6 +106,17 @@ const App = () => {
         )
     }
 
+    const updateLike = async (blog) => {
+        const updatedBlog = { ...blog, likes: (blog.likes + 1) }
+        await blogService.update(blog._id, updatedBlog)
+        getBlogs()
+    }
+
+    const removeBlog = async (blog) => {
+        await blogService.remove(blog._id)
+        getBlogs()
+    }
+
 
     return (
 
@@ -112,11 +131,12 @@ const App = () => {
                     <button onClick={handleLogOut}>Log out</button>
                     <Togglable buttonLabel={'add new blog'}>
                         <BlogForm
-                            addBlog={addBlog}
+                        addBlog={addBlog}
+                        renderMessage={renderMessage}
                         />
                     </Togglable>
 
-                    <BlogList blogs={blogs} />
+                    <BlogList blogs={blogs} updateLike={updateLike} removeBlog={removeBlog} />
                 </>
             }
         </>

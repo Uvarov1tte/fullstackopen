@@ -1,4 +1,6 @@
-const BlogForm = ({ addBlog }) => {
+import { useState, useEffect } from 'react'
+
+const BlogForm = ({ addBlog, renderMessage }) => {
     const [title, setTitle] = useState('')
     const [url, setUrl] = useState('')
     const [author, setAuthor] = useState('')
