@@ -1,6 +1,15 @@
+import Togglable from "./Togglable"
+
 const Blog = ({ blog }) => (
     <div>
-        {blog.title} {blog.author}
+        <div>{blog.title}</div>
+        <Togglable buttonLabel={view}>
+            <>
+                <div>{blog.url}</div>
+                <div>Likes: {blog.likes} <button>Like</button></div>
+                <div>{blog.author}</div>
+            </>
+        </Togglable>
     </div>
 )
 
