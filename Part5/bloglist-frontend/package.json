@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "concurrently \"npm run client\" \"cd ../../Part4/bloglist && npm run dev\"",
+    "e2e:test": "concurrently \"npm run client\" \"cd ../../Part4/bloglist && npm run start:test\"",
     "client": "vite",
     "test": "vitest run",
     "build": "vite build",

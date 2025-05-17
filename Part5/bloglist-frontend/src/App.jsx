@@ -73,8 +73,6 @@ const App = () => {
 
         }
 
-        console.log('logging in with', username, password)
-
     }
 
     const handleLogOut = async (event) => {
@@ -86,7 +84,8 @@ const App = () => {
     const addBlog = async (newBlog) => {
         const blog = await blogService.create(newBlog)
         console.log(blog)
-        setBlogs(blogs.concat(blog))
+        // setBlogs(blogs.concat(blog))
+        getBlogs()
     }
 
     const loginForm = () => {
@@ -122,11 +121,11 @@ const App = () => {
 
         <>
             <Notification message={message} />
+            <h1>Blogs app</h1>
             {user === null && loginForm()}
 
             {user !== null &&
                 <>
-                    <h2>blogs</h2>
                     <p>{user.name} logged in </p>
                     <button onClick={handleLogOut}>Log out</button>
                     <Togglable buttonLabel={'add new blog'}>
@@ -136,7 +135,12 @@ const App = () => {
                         />
                     </Togglable>
 
-                    <BlogList blogs={blogs} updateLike={updateLike} removeBlog={removeBlog} />
+                <BlogList
+                    blogs={blogs}
+                    updateLike={updateLike}
+                    removeBlog={removeBlog}
+                    user={user}
+                />
                 </>
             }
         </>
