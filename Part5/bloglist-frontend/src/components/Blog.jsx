@@ -20,11 +20,11 @@ const Blog = ({ blog, updateLike, removeBlog, user }) => {
 
     return (
         <div style={blogStyle} className='blog'>
-            <div>{blog.title} by {blog.author}</div>
+            <div className='blog-title'>{blog.title} by {blog.author}</div>
             <Togglable buttonLabel={'view'}>
                 <>
                     <div>{blog.url}</div>
-                    <div>Likes: {blog.likes} <button onClick={() => updateLike(blog)}>Like</button></div>
+                    <div> <span className='likes'>Likes: {blog.likes}</span><button onClick={() => updateLike(blog)}>Like</button></div>
                     {blog.user && <div>added by {blog.user.name}</div>}
                     {blog.user && removeButton()}
 

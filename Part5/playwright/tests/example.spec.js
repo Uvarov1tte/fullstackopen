@@ -55,7 +55,7 @@ describe('Note app', () => {
             await page.getByTestId('url').fill('aaa')
             await page.getByRole('button', { name: 'save' }).click()
             await page.getByRole('button', { name: 'cancel' }).click()
-            
+
         })
 
         test('a new blog can be created', async ({ page }) => {
@@ -106,5 +106,48 @@ describe('Note app', () => {
 
             await expect(page.getByRole('button', { name: 'Remove' })).toHaveCount(0)
         })
+    })
+
+    test('Blogs are arranged in the order according to the likes, the blog with most likes first', async ({ page }) => {
+        await page.getByRole('button', { name: 'log in' }).click()
+        await page.getByTestId('username').fill('admin')
+        await page.getByTestId('password').fill('qwerty')
+        await page.getByRole('button', { name: 'login' }).click()
+
+        await page.getByRole('button', { name: 'add new blog' }).click()
+        await page.getByTestId('title').fill('Least favourite')
+        await page.getByTestId('author').fill('admin')
+        await page.getByTestId('url').fill('aaa')
+        await page.getByRole('button', { name: 'save' }).click()
+        await page.getByRole('button', { name: 'view' }).click()
+
+        await page.getByTestId('title').fill('Second favourite')
+        await page.getByTestId('author').fill('admin')
+        await page.getByTestId('url').fill('aaa')
+        await page.getByRole('button', { name: 'save' }).click()
+        await page.getByRole('button', { name: 'view' }).click()
+        
+        await page.getByTestId('title').fill('Fan favourite')
+        await page.getByTestId('author').fill('admin')
+        await page.getByTestId('url').fill('aaa')
+        await page.getByRole('button', { name: 'save' }).click()
+        await page.getByRole('button', { name: 'view' }).click()
+
+        let likeButtons = await page.getByRole('button', { name: 'Like' }).all()
+        await likeButtons[2].click() //like the last one on list
+        const likes0 = await page.locator('.likes')
+        const expectedLikesInOrder0 = ['Likes: 1', 'Likes: 0', 'Likes: 0'];
+        await expect(likes0).toHaveText(expectedLikesInOrder0); //check if the order changed
+
+        await likeButtons[0].click()
+        await likeButtons[2].click()
+
+        const likes1 = await page.locator('.likes')
+        const expectedLikesInOrder1 = ['Likes: 2', 'Likes: 1', 'Likes: 0'];
+        const titles = await page.locator('.blog-title')
+        const expectedTitleInOrder = ['Fan favourite by admin', 'Second favourite by admin', 'Least favourite by admin']
+        await expect(likes1).toHaveText(expectedLikesInOrder1);
+        await expect(titles).toHaveText(expectedTitleInOrder);
+
     })
 })
