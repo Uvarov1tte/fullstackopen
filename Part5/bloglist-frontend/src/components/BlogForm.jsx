@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 
 const BlogForm = ({ addBlog, renderMessage }) => {
+    console.log(renderMessage)
     const [title, setTitle] = useState('')
     const [url, setUrl] = useState('')
     const [author, setAuthor] = useState('')
@@ -24,7 +25,7 @@ const BlogForm = ({ addBlog, renderMessage }) => {
 
         } catch (exception) {
 
-            renderMessage('Invalid values', 'error')
+            // renderMessage('Invalid values', 'error')
 
         }
     }
@@ -37,16 +38,19 @@ const BlogForm = ({ addBlog, renderMessage }) => {
                     <input
                         value={title}
                         onChange={({ target }) => setTitle(target.value)}
+                        placeholder='title'
                     /></div>
                 <div>Author
                     <input
                         value={author}
                         onChange={({ target }) => setAuthor(target.value)}
+                        placeholder='author'
                     /></div>
                 <div>URL
                     <input
                         value={url}
                         onChange={({ target }) => setUrl(target.value)}
+                        placeholder='url'
                     />
                 </div>
                 <button type="submit">save</button>
