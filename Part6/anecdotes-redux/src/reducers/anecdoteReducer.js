@@ -28,10 +28,24 @@ export const voteAnecdote = (id) => {
     }
 }
 
+export const createAnecdote = (content) => {
+    return {
+        type: 'CREATE',
+        payload: {
+            content: content,
+            id: getId(),
+            votes: 0
+        }
+    }
+}
+
+
 const reducer = (state = initialState, action) => {
     console.log('state now: ', state)
     console.log('action', action)
     switch (action.type) {
+        case 'CREATE':
+            return [...state, action.payload]
         case 'VOTE':
             const anecdotes = state
             const voted = anecdotes.filter((anec) => anec.id == action.payload.id)[0]
