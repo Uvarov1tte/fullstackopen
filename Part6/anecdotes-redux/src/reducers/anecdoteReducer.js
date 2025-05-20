@@ -45,14 +45,22 @@ const reducer = (state = initialState, action) => {
     console.log('action', action)
     switch (action.type) {
         case 'CREATE':
-            return [...state, action.payload]
+            const addedList = [...state, action.payload]
+            return state = addedList.sort(function (a, b) {
+                return b.votes - a.votes
+            })
         case 'VOTE':
             const anecdotes = state
             const voted = anecdotes.filter((anec) => anec.id == action.payload.id)[0]
             const voteUpdated = { ...voted, votes: voted.votes + 1 }
-            return state.map(anec => anec.id !== action.payload.id ? anec : voteUpdated)
+            const notSorted = state.map(anec => anec.id !== action.payload.id ? anec : voteUpdated)
+            return state = notSorted.sort(function (a, b) {
+                return b.votes - a.votes
+            })
         default:
-            return state
+            return state.sort(function (a, b) {
+                return b.votes - a.votes
+            })
     }
 }
 
