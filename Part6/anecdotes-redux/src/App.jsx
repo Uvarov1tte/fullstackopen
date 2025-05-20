@@ -1,5 +1,3 @@
-import { useSelector, useDispatch } from 'react-redux'
-import { voteAnecdote } from './reducers/anecdoteReducer'
 import NewAnecdote from './components/NewAnecdote'
 import AnecdoteList from './components/AnecdoteList'
 import Filter from './components/Filter'
