@@ -30,9 +30,18 @@ const AnecdoteList = ({ anecdotes }) => (
     <div>
         <h2>Anecdotes</h2>
         <ul>
-            {anecdotes.map(anecdote => <li key={anecdote.id} >{anecdote.content}</li>)}
+            {anecdotes.map(anecdote => <li key={anecdote.id} ><Link to={`/anecdote/${anecdote.id}`}>{anecdote.content}</Link></li>)}
         </ul>
     </div>
+)
+
+const AnecdoteShow = ({ anecdote }) => (
+    <>
+        <div>{anecdote.content}</div>
+        <div>{anecdote.author}</div>
+        <div>{anecdote.info}</div>
+        <div>{anecdote.votes}</div>
+    </>
 )
 
 const About = () => (
@@ -62,6 +71,7 @@ const CreateNew = (props) => {
     const [author, setAuthor] = useState('')
     const [info, setInfo] = useState('')
 
+    const navigate = useNavigate()
 
     const handleSubmit = (e) => {
         e.preventDefault()
@@ -71,6 +81,7 @@ const CreateNew = (props) => {
             info,
             votes: 0
         })
+        navigate('/')
     }
 
     return (
@@ -96,6 +107,16 @@ const CreateNew = (props) => {
 
 }
 
+const Notif = ({notif}) => {
+    if (!notif) {
+        return null
+    } else {
+        return (
+            <div>{notif}</div>
+        )
+    }
+}
+
 const App = () => {
     const [anecdotes, setAnecdotes] = useState([
         {
@@ -114,11 +135,13 @@ const App = () => {
         }
     ])
 
+
     const [notification, setNotification] = useState('')
 
     const addNew = (anecdote) => {
         anecdote.id = Math.round(Math.random() * 10000)
         setAnecdotes(anecdotes.concat(anecdote))
+        setNotification(`A new anecdote ${anecdote.content} created!`)
     }
 
     const anecdoteById = (id) =>
@@ -135,18 +158,22 @@ const App = () => {
         setAnecdotes(anecdotes.map(a => a.id === id ? voted : a))
     }
 
+    const match = useMatch('/anecdote/:id')
+    const anecdote = match
+        ? anecdoteById(Number(match.params.id))
+        : null
+
     return (
         <div>
             <h1>Software anecdotes</h1>
             <Menu />
+            <Notif notif={notification} />
             <Routes>
+                <Route path="/anecdote/:id" element={<AnecdoteShow anecdote={anecdote} />} />
                 <Route path="/" element={<AnecdoteList anecdotes={anecdotes} />} />
-                <Route path="/create" element={<About />} />
-                <Route path="/about" element={<CreateNew addNew={addNew} />} />
+                <Route path="/create" element={<CreateNew addNew={addNew} />} />
+                <Route path="/about" element={<About />} />
             </Routes>
-            {/* <AnecdoteList anecdotes={anecdotes} />
-            <About />
-            <CreateNew addNew={addNew} /> */}
             <Footer />
         </div>
     )
