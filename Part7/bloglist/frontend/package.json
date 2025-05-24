@@ -4,9 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "concurrently \"npm run client\" \"cd ../../Part4/bloglist && npm run dev\"",
-    "e2e:test": "concurrently \"npm run client\" \"cd ../../Part4/bloglist && npm run start:test\"",
-    "client": "vite",
+    "dev": "vite",
     "test": "vitest run",
     "build": "vite build",
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
