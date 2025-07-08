@@ -12,6 +12,8 @@ node_modules
 *.local
 examples
 .env
+tests
+drafts
 
 # Editor directories and files
 .vscode/*
