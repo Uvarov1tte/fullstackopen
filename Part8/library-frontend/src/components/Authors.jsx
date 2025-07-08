@@ -1,5 +1,3 @@
-import { useQuery } from '@apollo/client'
-
 const Authors = (props) => {
 	if (!props.show) {
 		return null
