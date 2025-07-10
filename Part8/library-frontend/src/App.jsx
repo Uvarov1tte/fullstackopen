@@ -1,22 +1,25 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Authors from "./components/Authors";
 import Books from "./components/Books";
 import NewBook from "./components/NewBook";
 import Notify from "./components/Notify";
 import LoginForm from "./components/LoginForm";
-import { useQuery, useApolloClient } from '@apollo/client'
+import { useQuery, useApolloClient, useSubscription } from '@apollo/client'
+import { gql } from '@apollo/client'
 
 import {
 	ALL_AUTHORS,
 	ALL_BOOKS,
-	LOGGED_IN_USER
+	BOOK_ADDED
 } from "./queries";
 import Recommendations from "./components/Recommendations";
 
 const App = () => {
 	const [page, setPage] = useState("authors");
 	const [errorMessage, setErrorMessage] = useState(null)
+	const [subscriptionMsg, setSubscriptionMsg] = useState(null)
 	const [token, setToken] = useState(null)
+	const [allGenres, setAllGenres] = useState([])
 	const [genre, setGenre] = useState(null)
 	const client = useApolloClient()
 
@@ -26,7 +29,40 @@ const App = () => {
 		variables: { genre }
 	})
 
-	if (authorQuery.loading || bookQuery.loading ||authorQuery.loading) {
+	// const allGenres = []
+
+	useSubscription(BOOK_ADDED, {
+		onData: (data) => {
+			const addedBook = data.data.data?.bookAdded
+			const msg = `New book added: ${addedBook.title} by ${addedBook.author.name}`
+			setSubscriptionMsg(msg)
+			setTimeout(() => {
+				setSubscriptionMsg(null)
+			}, 10000)
+
+
+			for (let g of addedBook.genres) {
+				if (!allGenres.includes(g)) {
+					allGenres.push(g)
+				}
+			}
+
+
+			// updateCache(client.cache, ['filterGenre', { query: ALL_AUTHORS }], addedBook)
+			client.cache.updateQuery(
+				{ query: ALL_BOOKS, variables: { genre: null } },
+				data => {
+					if (data) {
+						// client.cache.updateQuery({ query: ALL_AUTHORS })
+						return { allBooks: data.allBooks.concat(addedBook) }
+					}
+				}
+			)
+			// client.cache.updateQuery({ query: ALL_AUTHORS })
+		},
+	})
+
+	if (authorQuery.loading || bookQuery.loading || authorQuery.loading) {
 		return <div>loading...</div>
 	}
 
@@ -51,7 +87,7 @@ const App = () => {
 		setPage("books")
 	}
 
-	const allGenres = []
+	const displayedGenres = []
 	for (let b of allBooks.data.allBooks) {
 		// console.log(b)
 		for (let g of b.genres) {
@@ -64,6 +100,7 @@ const App = () => {
 	return (
 		<div>
 			{!token ? <Notify errorMessage={errorMessage} /> : <></>}
+			<Notify errorMessage={subscriptionMsg} />
 
 			<div>
 				<button onClick={() => setPage("authors")}>authors</button>
