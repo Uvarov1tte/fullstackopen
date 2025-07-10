@@ -1,9 +1,9 @@
-const Books = (props) => {
-	if (!props.show) {
+const Books = ({show, books, genres, filter }) => {
+	if (!show) {
 		return null
 	}
 
-	const books = props.books
+	// const books = books
 
 	return (
 		<div>
@@ -25,6 +25,13 @@ const Books = (props) => {
 					))}
 				</tbody>
 			</table>
+
+			<div>
+				{genres.map((g) => (
+					<button key={g} onClick={() => filter(g)}>{g}</button>
+				))}
+				<button onClick={() => filter(null)}>all genres</button>
+			</div>
 		</div>
 	)
 }

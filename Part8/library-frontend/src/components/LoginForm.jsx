@@ -20,7 +20,7 @@ const LoginForm = ({ show, setError, setToken }) => {
         if (result.data) {
             const token = result.data.login.value
             setToken(token)
-            localStorage.setItem('phonenumbers-user-token', token)
+            localStorage.setItem('library-user-token', token)
         }
     }, [result.data])
 
