@@ -26,15 +26,11 @@ const App = () => {
 		variables: { genre }
 	})
 
-	if (authorQuery.loading) {
-		return <div>loading authors...</div>
+	if (authorQuery.loading || bookQuery.loading ||authorQuery.loading) {
+		return <div>loading...</div>
 	}
 
 	const authors = authorQuery.data.allAuthors
-
-	if (bookQuery.loading) {
-		return <div>loading books...</div>
-	}
 
 	const books = bookQuery.data.allBooks
 
@@ -49,6 +45,10 @@ const App = () => {
 		setToken(null)
 		localStorage.clear()
 		client.resetStore()
+	}
+
+	const login = () => {
+		setPage("books")
 	}
 
 	const allGenres = []
@@ -87,7 +87,7 @@ const App = () => {
 			<NewBook show={page === "add"} />
 
 			{token ? <Recommendations show={page === "recommend"} /> : <></>}
-			<LoginForm show={page === "login"} setToken={setToken} setError={notify} />
+			<LoginForm show={page === "login"} setToken={setToken} setError={notify} changePage={login} />
 		</div>
 	);
 };

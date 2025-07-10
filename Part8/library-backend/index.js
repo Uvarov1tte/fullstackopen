@@ -189,9 +189,8 @@ const resolvers = {
 
             let authorExisted = false
             for (let a of allAuthors) {
-                if (a.name === args.author.name) {
+                if (a.name === args.author) {
                     authorExisted = true
-                    break
                 }
             }
 
@@ -204,8 +203,9 @@ const resolvers = {
                 
                 author = await newAuthor.save()
             } else {
-                const result = allAuthors.find(a => a.name === args.name)
+                const result = allAuthors.filter(a => a.name === args.author)
                 author = result[0]
+                console.log(author)
             }
 
             const bookToSave = new Book({
@@ -216,8 +216,9 @@ const resolvers = {
             })
 
             const savedBook = await bookToSave.save()
+            const returnBook = await Book.findById(savedBook.id).populate('author')
 
-            return savedBook
+            return returnBook
         },
 
         editAuthor: async (root, args, context) => {

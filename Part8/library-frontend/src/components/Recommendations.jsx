@@ -11,9 +11,6 @@ const Recommendations = ({ show }) => {
     })
     const recommended = recommendedQuery.data?.allBooks
 
-    console.log(favGenre)
-
-
     if (!show) {
         return null
     }
