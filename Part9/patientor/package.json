@@ -1,0 +1,31 @@
+{
+  "name": "patientor",
+  "version": "1.0.0",
+  "main": "index.ts",
+  "scripts": {
+    "tsc": "tsc",
+    "server": "ts-node-dev index.ts",
+    "dev": "concurrently \"npm run tsc && npm run server\" \"cd ../patientor-frontend && npm run dev\"",
+    "lint": "eslint .",
+    "start": "node build/index.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "@eslint/js": "^9.31.0",
+    "@stylistic/eslint-plugin": "^5.1.0",
+    "@types/eslint__js": "^8.42.3",
+    "@types/express": "^5.0.3",
+    "eslint": "^9.31.0",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.8.3",
+    "typescript-eslint": "^8.36.0"
+  },
+  "dependencies": {
+    "@types/cors": "^2.8.19",
+    "concurrently": "^9.2.0",
+    "cors": "^2.8.5",
+    "express": "^5.1.0"
+  }
+}
