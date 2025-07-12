@@ -1,4 +1,8 @@
-interface Result {
+interface Params {
+    target: number,
+    hours: number[]
+}
+export interface Result {
     periodLength: number;
     trainingDays: number;
     success: boolean;
@@ -9,25 +13,33 @@ interface Result {
 
 };
 
-const parseHours = (args: string[]): number[] => {
+const parseHours = (args: string[]): Params => {
+    if (args.length > 2) {
+        if (args.length < 9) throw new Error('Not enough arguments');
+        if (args.length > 9) throw new Error('Too many arguments');
+    }
 
-    let result = [];
-    const hours = args.slice(2)
-    for (let a of hours) {
+    const target = Number(args[2]);
+    let hours: number[] = [];
+    const initialHours = args.slice(3);
+    for (let a of initialHours) {
         if (!isNaN(Number(a))) {
-            result.push(Number(a))
+            hours.push(Number(a));
         }
         else {
             throw new Error('Provided values were not numbers!');
         }
     }
 
-    return result
-}
+    return {
+        target,
+        hours
+    };
+};
 
 
 
-const calculateExercises = (hours: number[]) => {
+export const calculateExercises = (hours: number[], target: number): Result => {
     const periodLength = hours.length;
     let trainingDays = 0;
 
@@ -37,7 +49,6 @@ const calculateExercises = (hours: number[]) => {
         }
     }
 
-    const target = 2;
     const average = hours.reduce((total, h) => total + h, 0) / hours.length;
     let success = true,
         rating: number,
@@ -68,18 +79,20 @@ const calculateExercises = (hours: number[]) => {
         average
     };
 
-    return result
+    return result;
 
 };
 
 
-try {
-    const hours = parseHours(process.argv);
-    console.log(calculateExercises(hours));
-} catch (error: unknown) {
-    let errorMessage = 'Something bad happened.'
-    if (error instanceof Error) {
-        errorMessage += ' Error: ' + error.message;
-    }
-    console.log(errorMessage);
+if (process.argv.length > 2) {
+    try {
+        const { target, hours } = parseHours(process.argv);
+        console.log(calculateExercises(hours, target));
+    } catch (error: unknown) {
+        let errorMessage = 'Something bad happened.';
+        if (error instanceof Error) {
+            errorMessage += ' Error: ' + error.message;
+        }
+        console.log(errorMessage);
+    };
 }
