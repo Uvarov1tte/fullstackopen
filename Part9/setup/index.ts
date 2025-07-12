@@ -11,20 +11,18 @@ import { calculateExercises, Result } from './exerciseCalculator';
 
 app.use(express.json());
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-app.get('/hello', (_req: any, res: any) => {
+app.get('/hello', (_req, res) => {
     const msg: string = 'Hello Full Stack!';
 
     res.send(msg);
 });
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-app.get('/bmi', (req: any, res: any) => {
+app.get('/bmi', (req, res) => {
     const height: number = Number(req.query.height);
     const weight: number = Number(req.query.weight);
 
     if (isNaN(height) || isNaN(weight)) {
-        return res.json({ error: 'malformatted parameters' });
+        res.json({ error: 'malformatted parameters' });
     }
 
     const bmi: string = calculateBmi(height, weight);
@@ -37,8 +35,7 @@ app.get('/bmi', (req: any, res: any) => {
     res.json(result);
 });
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-app.post('/exercises', (req: any, res: any) => {
+app.post('/exercises', (req, res) => {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const hours: number[] = req.body.daily_exercises;
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
@@ -46,16 +43,16 @@ app.post('/exercises', (req: any, res: any) => {
 
     for (let h of hours) {
         if (isNaN(h)) {
-            return res.json({ error: 'malformatted parameters' });
+            res.json({ error: 'malformatted parameters' });
         }
     };
 
     if (hours.length < 7) {
-        return res.json({ error: "parameters missing" });
+        res.json({ error: "parameters missing" });
     };
 
     if (isNaN(target)) {
-        return res.json({ error: 'malformatted parameters' });
+        res.json({ error: 'malformatted parameters' });
     };
 
     const result: Result = calculateExercises(hours, target);
