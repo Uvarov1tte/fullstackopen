@@ -1,18 +1,20 @@
 import express from "express";
 import { nonSensitive } from "../types/patients";
-const router = express.Router();
 import patientsService from "../services/patientsService";
+import { newPatientParser, errorMiddleware } from "../utils/middleware";
+import { Request, Response } from 'express';
+const router = express.Router();
 
 router.get("/", (_req, res) => {
     const patients: nonSensitive[] = patientsService.getPatients()
     res.send(patients);
 });
 
-router.post("", (req, res) => {
-    const { name, dateOfBirth, gender, occupation, ssn } = req.body
-    const addedEntry = patientsService.addPatient(name, dateOfBirth, gender, occupation, ssn)
+router.post("/", newPatientParser, (req: Request, res: Response) => {
+    const addedEntry = patientsService.addPatient(req.body);
+    res.json(addedEntry);
+});
 
-    res.json(addedEntry)
-})
+router.use(errorMiddleware);
 
 export default router
