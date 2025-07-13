@@ -2,13 +2,14 @@ import data from "../data/patients";
 import { v1 as uuid } from "uuid";
 import { patients, nonSensitive, Gender, newPatientEntry } from "../types/patients";
 
-let patients: patients[] = data.map(({ id, name, dateOfBirth, gender, occupation, ssn }) => ({
+let patients: patients[] = data.map(({ id, name, dateOfBirth, gender, occupation, ssn, entries }) => ({
     id,
     dateOfBirth,
     name,
     occupation,
     gender: Gender[gender as keyof typeof Gender],
     ssn,
+    entries
 }))
 
 const getPatients = (): nonSensitive[] => {
@@ -26,7 +27,8 @@ const getPatients = (): nonSensitive[] => {
 const addPatient = (entry: newPatientEntry): patients => {
     const addedEntry: patients = {
         id: uuid(),
-        ...entry
+        ...entry,
+        entries:[]
     }
 
     patients.push(addedEntry)
