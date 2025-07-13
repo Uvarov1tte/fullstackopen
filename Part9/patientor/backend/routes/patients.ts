@@ -12,8 +12,7 @@ router.get("/", (_req, res) => {
 router.get("/:id", (req, res) => {
     const id = req.params.id
     const allPatients = patientsService.getPatients()
-    const patient = allPatients.filter((p) => p.id === id ? p : !p)[0]
-    console.log(patient)
+    const patient = allPatients.find((p) => p.id === id)
     res.send(patient)
 })
 
