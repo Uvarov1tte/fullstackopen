@@ -1,4 +1,4 @@
-import { newPatientEntry, Gender } from "../types/patients";
+import { newPatientEntry, Gender } from "../types";
 import { z } from "zod";
 
 export const newEntrySchemna = z.object({

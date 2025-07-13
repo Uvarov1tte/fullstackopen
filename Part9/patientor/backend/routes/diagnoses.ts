@@ -1,11 +1,11 @@
 import express from "express";
-import { diagnoses } from "../types/diagnoses";
-import  diagnosesService  from "../services/diagnosesService"
+import { Diagnosis } from "../types";
+import diagnosesService from "../services/diagnosesService"
 
 const router = express.Router();
 
 router.get("/", (_req, res) => {
-    const diagnoses: diagnoses[] = diagnosesService.getDiagnoses()
+    const diagnoses: Diagnosis[] = diagnosesService.getDiagnoses()
     res.send(diagnoses);
 });
 
