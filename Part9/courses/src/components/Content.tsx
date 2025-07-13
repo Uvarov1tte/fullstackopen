@@ -1,10 +1,11 @@
-import type { Course, CourseProp } from "../types"
+import type { AllCoursesProp } from "../types"
+import { Part } from "./Part"
 
-export const Content = (props: CourseProp) => {
-    const allCourses: Course[] = props.courses
+export const Content = (props: AllCoursesProp) => {
+    const allCourses = props.courses
     return (
         <>
-            {allCourses.map((c) => <p key={c.name}>{c.name}{c.exerciseCount}</p>)}
+            {allCourses.map((c) => <Part key={c.name} course={c}/>)}
         </>
     )
 }
