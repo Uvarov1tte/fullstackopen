@@ -1,5 +1,5 @@
 import { NextFunction } from "express";
-import { newEntrySchemna } from "../utils/utils";
+import { newEntrySchemna } from "./utils";
 import { Request, Response } from 'express';
 import z from "zod";
 
