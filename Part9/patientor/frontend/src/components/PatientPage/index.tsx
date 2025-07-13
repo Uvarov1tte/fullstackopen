@@ -1,12 +1,25 @@
 import { Female, Male } from "@mui/icons-material"
-import { Patient } from "../../types"
+import { Diagnosis, Patient } from "../../types"
 import { List, ListItem, Table, TableBody, TableCell, TableContainer, TableRow, Typography } from "@mui/material"
+import { useEffect, useState } from "react"
+import diagnosesService from "../../services/diagnoses"
 
 interface Props {
   patient: Patient | null | undefined
 }
 
 export const PatientPage = (props: Props) => {
+  const [diagnoses, setDiagnoses] = useState<Diagnosis[]>([])
+
+  useEffect(() => {
+    const fetchDiagnoses = async () => {
+      const diagnoses = await diagnosesService.getAll();
+      console.log(diagnoses)
+      setDiagnoses(diagnoses);
+    };
+    void fetchDiagnoses();
+  }, [])
+
   const patient = props.patient
 
   if (patient === null || patient === undefined) {
@@ -57,8 +70,9 @@ export const PatientPage = (props: Props) => {
                   {
                     e.diagnosisCodes
                       ? e.diagnosisCodes.map((d) => {
+                        const description = diagnoses.find((i) => i.code === d)?.name
                         return (
-                          <ListItem key={d}><Typography variant="body2">• {d}</Typography></ListItem>
+                          <ListItem key={d}><Typography variant="body2">• {d} {description}</Typography></ListItem>
                         )
                       })
                       : <></>
