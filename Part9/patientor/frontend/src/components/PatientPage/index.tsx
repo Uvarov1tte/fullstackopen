@@ -1,15 +1,15 @@
-import { Patient } from "../../types"
+import { Patient, EntryFormValues } from "../../types"
 import { Typography } from "@mui/material"
 import { PatientInfo } from "./PatientInfo"
 import { EntryDetails } from "./EntryDetails"
+import { EntryForm } from "./EntryForm"
 
 interface Props {
   patient: Patient | null | undefined
+  addEntry: (values: EntryFormValues) => void;
 }
 
-export const PatientPage = (props: Props) => {
-
-  const patient = props.patient
+export const PatientPage = ({ patient, addEntry }: Props) => {
 
   if (patient === null || patient === undefined) {
     return (
@@ -23,7 +23,9 @@ export const PatientPage = (props: Props) => {
 
       <PatientInfo patient={patient} />
 
-      <Typography variant="h5" style={{ marginTop: "2rem", marginBottom: "0.5rem" }}>entries</Typography>
+      <Typography variant="h5" style={{ marginTop: "2rem", marginBottom: "0.5rem" }}>add entry</Typography>
+      <EntryForm onSubmit={addEntry} />
+      <Typography variant="h5" style={{ marginTop: "2rem", marginBottom: "0.5rem" }}>all entries</Typography>
 
       <div>
         {
