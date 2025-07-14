@@ -1,5 +1,3 @@
-import { useEffect, useState } from "react"
-import diagnosesService from "../../services/diagnoses"
 import { Diagnosis, Entry } from "../../types"
 import { HealthCheck } from "./EntryTypes/HealthCheck"
 import { Hospital } from "./EntryTypes/Hospital"
@@ -7,25 +5,11 @@ import { OccupationalHealthcare } from "./EntryTypes/OccupationalHealthcare"
 import { Card, CardContent, Typography, List, ListItem } from "@mui/material"
 
 interface Props {
-  entry: Entry
+  entry: Entry;
+  diagnoses: Diagnosis[]
 }
 
-export const EntryDetails = (props: Props) => {
-
-  const [diagnoses, setDiagnoses] = useState<Diagnosis[]>([])
-
-  useEffect(() => {
-    const fetchDiagnoses = async () => {
-      const diagnoses = await diagnosesService.getAll();
-      console.log(diagnoses)
-      setDiagnoses(diagnoses);
-    };
-    void fetchDiagnoses();
-  }, [])
-
-  const entry = props.entry
-
-
+export const EntryDetails = ({entry, diagnoses}: Props) => {
   return (
     <Card variant="outlined" sx={{ marginBottom: "1rem" }}>
       <CardContent>

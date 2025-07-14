@@ -1,4 +1,4 @@
-import { TextField } from "@mui/material"
+import { Select, MenuItem } from "@mui/material"
 
 interface Props {
     value: number
@@ -7,12 +7,19 @@ interface Props {
 
 export const HealthCheckFormPart = ({ value, setValue }: Props) => {
     return (
-        <TextField
+        <Select
             sx={{ marginBottom: '0.5rem' }}
-            label="Healthcheck rating"
+            labelId="Healthcheck"
+            id="Healthcheck"
             fullWidth
             value={value}
+            label="Healthcheck Rating"
             onChange={({ target }) => setValue(Number(target.value))}
-        />
+        >
+            <MenuItem value={0}>Healthy</MenuItem>
+            <MenuItem value={1}>LowRisk</MenuItem>
+            <MenuItem value={2}>HighRisk</MenuItem>
+            <MenuItem value={3}>CriticalRisk</MenuItem>
+        </Select>
     )
 }

@@ -12,10 +12,14 @@ export const HospitalFormPart = ({ dischargeDate, setDischargeDate, criteria, se
             <CardContent>
                 <Typography variant="body1">Discharge</Typography>
                 <TextField
+                    id="dischargeDate"
+                    type="date"
                     sx={{ marginBottom: '0.5rem' }}
-                    label="date"
                     fullWidth
                     value={dischargeDate}
+                    InputLabelProps={{
+                        shrink: true,
+                    }}
                     onChange={({ target }) => setDischargeDate(target.value)}
                 />
                 <TextField

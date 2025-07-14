@@ -9,9 +9,11 @@ import { Patient, EntryFormValues } from "./types";
 import patientService from "./services/patients";
 import PatientListPage from "./components/PatientListPage";
 import { PatientPage } from "./components/PatientPage";
+import { Notification } from "./components/Notification";
 
 const App = () => {
   const [patients, setPatients] = useState<Patient[]>([]);
+  const [message, setMessage] = useState<string | null>(null)
 
   useEffect(() => {
     void axios.get<void>(`${apiBaseUrl}/ping`);
@@ -23,6 +25,13 @@ const App = () => {
     };
     void fetchPatientList();
   }, []);
+
+  const setNotification = (msg: string) => {
+    setMessage(msg)
+    setTimeout(() => {
+      setMessage(null)
+    }, 5000);
+  }
 
   const match = useMatch('/patients/:id')
   const patient = match
@@ -46,13 +55,13 @@ const App = () => {
           if (e?.response?.data && typeof e?.response?.data === "string") {
             const message = e.response.data.replace('Something went wrong. Error: ', '');
             console.error(message);
-            // setError(message);
+            setNotification(message);
           } else {
-            // setError("Unrecognized axios error");
+            setNotification("Unrecognized axios error");
           }
         } else {
           console.error("Unknown error", e);
-          // setError("Unknown error");
+          setNotification("Unknown error");
         }
       }
     }
@@ -69,6 +78,7 @@ const App = () => {
         <Button component={Link} to="/" variant="contained" color="primary">
           Home
         </Button>
+        <Notification message={message}/>
         <Divider hidden />
         <Routes>
           <Route path="/" element={<PatientListPage patients={patients} setPatients={setPatients} />} />

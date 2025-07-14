@@ -22,20 +22,33 @@ export const OccupationalHealthcareFormPart = ({ employerName, setEmployerName, 
                         onChange={({ target }) => setEmployerName(target.value)}
                     />
                     <Typography variant="body1">Sick leave</Typography>
+
                     <TextField
-                        sx={{ marginBottom: '0.5rem' }}
-                        label="startDate"
-                        fullWidth
+                        id="date"
+                        label="start date"
+                        type="date"
+                        sx={{ marginBottom: '0.5rem', marginTop: '0.5rem' }}
                         value={startDate}
+                        fullWidth
+                        InputLabelProps={{
+                            shrink: true,
+                        }}
                         onChange={({ target }) => setStartDate(target.value)}
                     />
+
                     <TextField
+                        id="date"
+                        label="end date"
+                        type="date"
                         sx={{ marginBottom: '0.5rem' }}
-                        label="endDate"
-                        fullWidth
                         value={endDate}
+                        fullWidth
+                        InputLabelProps={{
+                            shrink: true,
+                        }}
                         onChange={({ target }) => setEndDate(target.value)}
                     />
+
                 </CardContent>
             </Card>
         </>

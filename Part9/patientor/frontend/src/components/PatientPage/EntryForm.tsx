@@ -1,21 +1,23 @@
 import { SyntheticEvent, useState } from "react"
-import { EntryFormValues } from "../../types";
-import { TextField, Grid, Button, Select, MenuItem, InputLabel, Typography } from "@mui/material";
+import { EntryFormValues, Diagnosis } from "../../types";
+import { TextField, Grid, Button, Select, MenuItem, InputLabel, Typography, OutlinedInput } from "@mui/material";
+import type { SelectChangeEvent } from "@mui/material";
 import { HealthCheckFormPart } from "./EntryFormTypes/HealthCheckFormPart";
 import { OccupationalHealthcareFormPart } from "./EntryFormTypes/OccupationalHealthcareFormPart";
 import { HospitalFormPart } from "./EntryFormTypes/HospitalFormPart";
 
 interface Props {
     onSubmit: (values: EntryFormValues) => void;
+    diagnosisList: Array<Diagnosis['code']>
 }
 
-export const EntryForm = ({ onSubmit }: Props) => {
+export const EntryForm = ({ onSubmit, diagnosisList }: Props) => {
 
     const [type, setType] = useState('')
     const [description, setDescription] = useState('')
     const [date, setDate] = useState('')
     const [specialist, setSpecialist] = useState('')
-    const [diagnosisCodes, setDiagnosisCodes] = useState('')
+    const [diagnosisCodes, setDiagnosisCodes] = useState<Array<Diagnosis['code']>>([])
 
     const [healthCheckRating, setHealthCheckRating] = useState(0)
 
@@ -30,7 +32,7 @@ export const EntryForm = ({ onSubmit }: Props) => {
         evt.preventDefault()
 
         if (type !== "") {
-            
+
             switch (type) {
                 case "HealthCheck":
                     onSubmit({
@@ -38,7 +40,7 @@ export const EntryForm = ({ onSubmit }: Props) => {
                         description,
                         specialist,
                         healthCheckRating,
-                        diagnosisCodes: JSON.parse(`[${diagnosisCodes}]`),
+                        diagnosisCodes,
                         type
                     })
                     break
@@ -48,10 +50,10 @@ export const EntryForm = ({ onSubmit }: Props) => {
                         description,
                         specialist,
                         discharge: {
-                            date,
+                            date: dischargeDate,
                             criteria
                         },
-                        diagnosisCodes: JSON.parse(`[${diagnosisCodes}]`),
+                        diagnosisCodes,
                         type
                     })
                     break
@@ -65,7 +67,7 @@ export const EntryForm = ({ onSubmit }: Props) => {
                             startDate,
                             endDate
                         },
-                        diagnosisCodes: JSON.parse(`[${diagnosisCodes}]`),
+                        diagnosisCodes,
                         type
                     })
                     break
@@ -82,13 +84,22 @@ export const EntryForm = ({ onSubmit }: Props) => {
         setDate('')
         setSpecialist('')
         setHealthCheckRating(0)
-        setDiagnosisCodes('')
+        setDiagnosisCodes([])
         setDischargeDate('')
         setCriteria('')
         setEmployerName('')
         setStartDate('')
         setEndDate('')
     }
+
+    const handleMultipleSelect = (event: SelectChangeEvent<typeof diagnosisCodes>) => {
+        const {
+            target: { value },
+        } = event;
+        setDiagnosisCodes(
+            typeof value === 'string' ? value.split(',') : value,
+        );
+    };
 
     return (
         <div >
@@ -115,10 +126,15 @@ export const EntryForm = ({ onSubmit }: Props) => {
                     onChange={({ target }) => setDescription(target.value)}
                 />
                 <TextField
-                    sx={{ marginBottom: '0.5rem' }}
+                    id="date"
                     label="Date"
-                    fullWidth
+                    type="date"
+                    sx={{ marginBottom: '0.5rem' }}
                     value={date}
+                    fullWidth
+                    InputLabelProps={{
+                        shrink: true,
+                    }}
                     onChange={({ target }) => setDate(target.value)}
                 />
                 <TextField
@@ -128,42 +144,56 @@ export const EntryForm = ({ onSubmit }: Props) => {
                     value={specialist}
                     onChange={({ target }) => setSpecialist(target.value)}
                 />
-                <>
-                    {
-                        type === "Hospital" ?
-                            <HospitalFormPart
-                                dischargeDate={dischargeDate}
-                                setDischargeDate={setDischargeDate}
-                                criteria={criteria}
-                                setCriteria={setCriteria} />
-                            : type === "OccupationalHealthcare" ?
-                                <OccupationalHealthcareFormPart
-                                    employerName={employerName}
-                                    setEmployerName={setEmployerName}
-                                    startDate={startDate}
-                                    setStartDate={setStartDate}
-                                    endDate={endDate}
-                                    setEndDate={setEndDate}
-                                />
-                                : type === "HealthCheck" ?
-                                    <HealthCheckFormPart
-                                        value={healthCheckRating}
-                                        setValue={setHealthCheckRating} />
-                                    : <Typography
-                                        variant="body1"
-                                        sx={{ color: 'red' }}
-                                    >
-                                        Please select entry type for more details
-                                    </Typography>
-                    }
-                </>
-                <TextField
-                    sx={{ marginBottom: '0.5rem' }}
-                    label="Diagnosis codes"
+
+                {
+                    type === "Hospital" ?
+                        <HospitalFormPart
+                            dischargeDate={dischargeDate}
+                            setDischargeDate={setDischargeDate}
+                            criteria={criteria}
+                            setCriteria={setCriteria} />
+                        : type === "OccupationalHealthcare" ?
+                            <OccupationalHealthcareFormPart
+                                employerName={employerName}
+                                setEmployerName={setEmployerName}
+                                startDate={startDate}
+                                setStartDate={setStartDate}
+                                endDate={endDate}
+                                setEndDate={setEndDate}
+                            />
+                            : type === "HealthCheck" ?
+                                <HealthCheckFormPart
+                                    value={healthCheckRating}
+                                    setValue={setHealthCheckRating} />
+                                : <Typography
+                                    variant="body1"
+                                    sx={{ color: 'red' }}
+                                >
+                                    Please select entry type for more details
+                                </Typography>
+                }
+
+
+                <InputLabel id="demo-multiple-name-label">Diagnoses</InputLabel>
+                <Select
                     fullWidth
+                    sx={{ marginBottom: '0.5rem' }}
+                    labelId="demo-multiple-name-label"
+                    id="demo-multiple-name"
+                    multiple
                     value={diagnosisCodes}
-                    onChange={({ target }) => setDiagnosisCodes(target.value)}
-                />
+                    onChange={handleMultipleSelect}
+                    input={<OutlinedInput label="Diagnosis code" />}
+                >
+                    {diagnosisList.map((d) => (
+                        <MenuItem
+                            key={d}
+                            value={d}
+                        >
+                            {d}
+                        </MenuItem>
+                    ))}
+                </Select>
                 <Grid container>
                     <Grid item xs={6}>
                         <Button
@@ -173,7 +203,7 @@ export const EntryForm = ({ onSubmit }: Props) => {
                             type="button"
                             onClick={onCancel}
                         >
-                            Cancel
+                            Clear
                         </Button>
                     </Grid>
                     <Grid item xs={6}>

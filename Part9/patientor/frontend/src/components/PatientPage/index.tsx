@@ -1,8 +1,10 @@
-import { Patient, EntryFormValues } from "../../types"
+import { Patient, EntryFormValues, Diagnosis } from "../../types"
+import diagnosesService from "../../services/diagnoses"
 import { Typography } from "@mui/material"
 import { PatientInfo } from "./PatientInfo"
 import { EntryDetails } from "./EntryDetails"
 import { EntryForm } from "./EntryForm"
+import { useState, useEffect } from "react"
 
 interface Props {
   patient: Patient | null | undefined
@@ -10,6 +12,20 @@ interface Props {
 }
 
 export const PatientPage = ({ patient, addEntry }: Props) => {
+
+  const [diagnoses, setDiagnoses] = useState<Diagnosis[]>([])
+    const [diagnosisCodes, setDiagnosisCodes] = useState<Array<Diagnosis['code']>>([])
+  
+    useEffect(() => {
+      const fetchDiagnoses = async () => {
+        const diagnoses = await diagnosesService.getAll();
+        console.log(diagnoses)
+        setDiagnoses(diagnoses);
+        setDiagnosisCodes(diagnoses.map((d) => d.code))
+      };
+      void fetchDiagnoses();
+    }, [])
+  
 
   if (patient === null || patient === undefined) {
     return (
@@ -24,7 +40,9 @@ export const PatientPage = ({ patient, addEntry }: Props) => {
       <PatientInfo patient={patient} />
 
       <Typography variant="h5" style={{ marginTop: "2rem", marginBottom: "0.5rem" }}>add entry</Typography>
-      <EntryForm onSubmit={addEntry} />
+
+      <EntryForm onSubmit={addEntry} diagnosisList={diagnosisCodes} />
+      
       <Typography variant="h5" style={{ marginTop: "2rem", marginBottom: "0.5rem" }}>all entries</Typography>
 
       <div>
@@ -32,7 +50,7 @@ export const PatientPage = ({ patient, addEntry }: Props) => {
           patient.entries.map((e) => {
 
             return (
-              <EntryDetails key={e.id} entry={e} />
+              <EntryDetails key={e.id} entry={e} diagnoses={diagnoses}/>
             )
           })
         }
