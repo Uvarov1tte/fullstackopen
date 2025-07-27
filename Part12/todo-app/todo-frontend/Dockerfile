@@ -1,0 +1,20 @@
+# The first FROM is now a stage called build-stage
+
+FROM node:lts-jod AS build-stage 
+
+WORKDIR /usr/src/app
+
+COPY . .
+
+ENV VITE_BACKEND_URL=http://localhost:3000
+
+RUN npm ci
+
+RUN npm run test
+
+RUN npm run build
+
+
+FROM nginx:1.29-alpine
+
+COPY --from=build-stage /usr/src/app/dist /usr/share/nginx/html
