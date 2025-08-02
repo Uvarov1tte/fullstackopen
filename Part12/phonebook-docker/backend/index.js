@@ -20,13 +20,13 @@ app.get('/info', async (req, res) => {
     res.send(`<p>Phonebook has info for ${persons.length} people</p><p>${new Date(Date.now()).toString()}</p>`)
 })
 
-app.get('/api/persons', (req, res) => {
+app.get('/persons', (req, res) => {
     Person.find({}).then(person => {
         res.json(person)
     })
 })
 
-app.get('/api/persons/:id', (req, res, next) => {
+app.get('/persons/:id', (req, res, next) => {
     const id = req.params.id
     Person.findById(id)
         .then(person => {
@@ -37,7 +37,7 @@ app.get('/api/persons/:id', (req, res, next) => {
         .catch(error => next(error))
 })
 
-app.delete('/api/persons/:id', (req, res, next) => {
+app.delete('/persons/:id', (req, res, next) => {
     Person.findByIdAndDelete(req.params.id)
         .then(result => {
             console.log(result)
@@ -46,7 +46,7 @@ app.delete('/api/persons/:id', (req, res, next) => {
         .catch(error => next(error))
 })
 
-app.post('/api/persons', async (req, res, next) => {
+app.post('/persons', async (req, res, next) => {
     const body = req.body
     if (!body.name || !body.number) {
         return res.status(400).json({
@@ -66,7 +66,7 @@ app.post('/api/persons', async (req, res, next) => {
         .catch(err => next(err))
 })
 
-app.put('/api/persons/:id', (req, res, next) => {
+app.put('/persons/:id', (req, res, next) => {
     const { name: name, number: number } = req.body
 
     Person.findById(req.params.id)
