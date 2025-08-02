@@ -1,0 +1,75 @@
+Script started on 2025-07-27 09:36:27+00:00 [TERM="xterm" TTY="/dev/pts/0" COLUMNS="110" LINES="24"]
+# mongosh -u admin -p admin
+Current Mongosh Log ID: 6885f32ee4fbb1616689b03c
+Connecting to:          mongodb://<credentials>@127.0.0.1:27017/?directConnection=true&serverSelectionTimeoutM
+S=2000&appName=mongosh+2.5.6
+Using MongoDB:          8.0.12
+Using Mongosh:          2.5.6
+
+For mongosh info see: https://www.mongodb.com/docs/mongodb-shell/
+
+------
+   The server generated these startup warnings when booting
+   2025-07-27T09:09:41.241+00:00: Using the XFS filesystem is strongly recommended with the WiredTiger storage
+ engine. See http://dochub.mongodb.org/core/prodnotes-filesystem
+   2025-07-27T09:09:41.565+00:00: For customers running the current memory allocator, we suggest changing the
+contents of the following sysfsFile
+   2025-07-27T09:09:41.565+00:00: For customers running the current memory allocator, we suggest changing the
+contents of the following sysfsFile
+   2025-07-27T09:09:41.565+00:00: We suggest setting the contents of sysfsFile to 0.
+   2025-07-27T09:09:41.565+00:00: vm.max_map_count is too low
+   2025-07-27T09:09:41.565+00:00: We suggest setting swappiness to 0 or 1, as swapping can cause performance p
+roblems.
+------
+
+test> show dbs
+admin         100.00 KiB
+config         60.00 KiB
+local          72.00 KiB
+the_database   40.00 KiB
+test> use the_database
+switched to db the_database
+the_database> show collections
+todos
+the_database> db.todos.find({})
+[
+  {
+    _id: ObjectId('6885ecd4eb32acfacd89b03d'),
+    text: 'Write code',
+    done: true
+  },
+  {
+    _id: ObjectId('6885ecd4eb32acfacd89b03e'),
+    text: 'Learn about containers',
+    done: false
+  }
+]
+the_database> db.todos.insertOne({"item":"Increase the number of tools in my tool belt", "done": false})
+{
+  acknowledged: true,
+  insertedId: ObjectId('6885f3c3e4fbb1616689b03d')
+}
+the_database> db.todos.find({})
+[
+  {
+    _id: ObjectId('6885ecd4eb32acfacd89b03d'),
+    text: 'Write code',
+    done: true
+  },
+  {
+    _id: ObjectId('6885ecd4eb32acfacd89b03e'),
+    text: 'Learn about containers',
+    done: false
+  },
+  {
+    _id: ObjectId('6885f3c3e4fbb1616689b03d'),
+    item: 'Increase the number of tools in my tool belt',
+    done: false
+  }
+]
+the_database>
+(To exit, press Ctrl+C again or Ctrl+D or type .exit)
+the_database>
+# exit
+
+Script done on 2025-07-27 09:39:32+00:00 [COMMAND_EXIT_CODE="0"]

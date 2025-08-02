@@ -1,0 +1,9 @@
+Script started on 2025-07-26 17:58:34+00:00 [TERM="xterm" TTY="/dev/pts/0" COLUM
+NS="80" LINES="24"]
+# apt-get -y install curl
+...
+# apt install -y nodejs
+...
+# node /usr/src/app/index.js
+Hello World
+# exit
