@@ -1,0 +1,3 @@
+[submodule "Part10_ReactNative/rate-repository-app"]
+	path = Part10_ReactNative/rate-repository-app
+	url = https://github.com/Uvarov1tte/rate-repository-app.git
