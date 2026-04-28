@@ -1,3 +1,6 @@
 [submodule "Part10_ReactNative/rate-repository-app"]
 	path = Part10_ReactNative/rate-repository-app
 	url = https://github.com/Uvarov1tte/rate-repository-app.git
+[submodule "Part11/fs-pokedex-fso"]
+	path = Part11/fs-pokedex-fso
+	url = https://github.com/Uvarov1tte/fs-pokedex-fso.git
