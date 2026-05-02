@@ -4,3 +4,6 @@
 [submodule "Part11/fs-pokedex-fso"]
 	path = Part11/fs-pokedex-fso
 	url = https://github.com/Uvarov1tte/fs-pokedex-fso.git
+[submodule "Part11/bloglist-fso-cicd"]
+	path = Part11/bloglist-fso-cicd
+	url = https://github.com/Uvarov1tte/bloglist-fso-cicd.git
